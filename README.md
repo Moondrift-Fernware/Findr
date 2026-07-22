@@ -229,6 +229,28 @@ Better value. *(˶ᵔ ᵕ ᵔ˶)*
 
 ---
 
+---
+
+# Running the Prototype
+
+Open `index.html`. That's it.
+
+Double-click it, drag it into a browser tab, or serve the folder — all three work. React and the three typefaces are vendored into `vendor/`, so the prototype makes **no network requests at all** and renders identically on a plane, on venue wifi, or off a USB stick.
+
+## Responsive behaviour
+
+The prototype adapts to whatever it's opened on:
+
+| Device | Behaviour |
+|--------|-----------|
+| Desktop / laptop | Phone frame on a dark stage, auto-fitted to the window so it's never clipped on a short screen and fills a large monitor |
+| Tablet | Same framed stage — the layout is phone-width by design, so stretching it wide looks wrong |
+| Phone | Frame dissolves. The app fills the viewport edge to edge like any responsive site, notch and home-indicator safe areas respected |
+
+Scaling is handled by `--findr-scale` (computed in `<head>`) and the breakpoint lives in the stylesheet inside `<helmet>`. Both are commented — the design size is `390 × 844`.
+
+---
+
 ## License
 
 This project is licensed under the repository's chosen license.
