@@ -251,6 +251,50 @@ Scaling is handled by `--findr-scale` (computed in `<head>`) and the breakpoint 
 
 ---
 
+# Accessibility
+
+Findr keeps its normal look by default. **Settings → Vision & readability** holds a single master switch, and everything else lives behind it.
+
+## Accessibility mode
+
+**Off** — the default. PaperDesign exactly as authored: the warm cream ground, the soft greys, the original accent hues, and the compact layout. Nothing is compromised to accommodate a mode nobody has asked for.
+
+**On** — every foreground colour deepens until it is comfortably readable, and the app moves to the comfortable layout for more breathing room. Density remains overridable under Appearance; the mode sets it, it doesn't lock it.
+
+## Contrast
+
+Three levels, available once the mode is on:
+
+| Level | Ground | Worst contrast anywhere |
+|-------|--------|------------------------|
+| **Paper** | Cream, grid intact | 4.79:1 |
+| **High** | White, hairlines become edges | 6.15:1 |
+| **Higher** | Pure white, no tinted surfaces, accents near-black | 9.90:1 |
+
+Paper is the tier most people who need help will live in: it still looks like Findr, it just stops being faint. High and Higher trade the paper away for progressively more separation, ending at a ground with no tint anywhere and accents dark enough to read as mass rather than hue.
+
+## Text size
+
+Five steps from 100% to 175%. The slider is paired with large **A** / **A** steppers on either side, because a slider alone is hard work with a tremor or arthritis — both drive the same setting, and the slider is fully keyboard operable. A live preview built from a real product row shows the effect before you leave the screen.
+
+Every size in the app is `calc(Npx * var(--ts))`, so nothing is left behind when text grows. Fixed-height rows became minimum heights so they expand instead of clipping, and the bottom navigation scales more gently and wraps rather than crushing five labels into 390px.
+
+## Colour-blind friendly
+
+Findr signals price drops in green and rises in red, which is the exact pair red–green colour blindness collapses — roughly 1 in 12 men. This moves the semantic pair to blue and orange, distinct under deuteranopia, protanopia and tritanopia. The ↓ / ↑ arrows and the wording already carry the meaning without colour at all.
+
+## Colour
+
+Four accents — Moss, Slate, Plum, Clay — labelled by name rather than shown as a bare swatch, since a swatch is no use if you can't tell swatches apart. Each has a value per contrast tier, darkening as the ground lightens.
+
+## Verification
+
+Every text node on every screen is measured programmatically against **WCAG 2.1 AA** (4.5:1 body, 3:1 large text), compositing translucent backgrounds properly, across all seven accessibility configurations and at every text size. All pass. Interactive targets meet the 44px minimum and keyboard focus is visible throughout.
+
+Tier 0 is deliberately exempt: as authored, PaperDesign's muted grey sits at 2.6:1. That is the design, and it is what the master switch exists to change.
+
+---
+
 ## License
 
 This project is licensed under the repository's chosen license.

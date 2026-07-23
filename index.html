@@ -83,6 +83,186 @@ window.__resources = {
       *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
     }
 
+    /* ═══ ACCESSIBILITY TOKENS ═══════════════════════════════════════════
+       Every colour and type size in the app resolves through these. That's
+       what lets text size, contrast and palette change instantly, app-wide,
+       without re-rendering anything.
+       --ts is the text scale multiplier: every font-size is calc(Npx * --ts).
+       ═══════════════════════════════════════════════════════════════════ */
+    /* ── Tier 0 · PaperDesign, exactly as authored ────────────────────
+       This is what everyone sees by default. Untouched: the warm cream
+       ground, the soft greys, the original accent hues. Some of these do
+       not meet WCAG AA — #9A9684 on #F4F1E8 is about 2.6:1 — which is
+       precisely why the tiers below exist. The design is not compromised
+       to serve accessibility; accessibility is a mode you switch into. */
+    :root {
+      --ts: 1;
+      --ink:       #23211A;
+      --ink-2:     #6A6656;
+      --ink-3:     #9A9684;
+      --ink-4:     #B9B4A3;
+      --bg:        #F4F1E8;
+      --surface:   #FBFAF5;
+      --surface-2: #EAE7DC;
+      --line:      #DED9C9;
+      --line-2:    #CFC9B6;
+      --danger:    #A6503F;
+      --warn:      #B07A45;
+      --ok-deep:   #3C5E3F;
+      --focus:     #23211A;
+      --cat-blue:  #5A8296;
+      --cat-plum:  #7A6597;
+      --cat-rose:  #A65C7E;
+      --cat-green: #4E7A52;
+    }
+
+    /* ── Tier 1 · PaperDesign, WCAG-strict ────────────────────────────
+       Accessibility mode on, contrast at Standard. Still unmistakably
+       PaperDesign — same cream ground, same paper grid, same hues — but
+       every foreground token is pulled down until it clears AA (4.5:1)
+       against the surface it actually sits on. This is the tier most
+       people who need help will live in: readable without looking like
+       an assistive device.                                             */
+    :root.a11y-strict {
+      --ink-2:     #5C5949;   /* 6.4:1 on cream  (was 5.2) */
+      --ink-3:     #686455;   /* 5.2:1 on cream  (was 2.6) */
+      --ink-4:     #8C8878;   /* non-text use only         */
+      --danger:    #96422F;   /* 6.0:1           (was 4.3) */
+      --warn:      #7D5520;   /* 5.7:1           (was 3.3) */
+      --ok-deep:   #2E4B31;
+      --cat-blue:  #3F6076;   /* all four were 3.9-4.1:1   */
+      --cat-plum:  #5B4874;
+      --cat-rose:  #8A3F5D;
+      --cat-green: #3F6444;
+    }
+
+    /* ── Tier 2 · High contrast ───────────────────────────────────────
+       The paper ground gives way to white and the greys collapse toward
+       black. Hairlines become real edges. Body tokens clear AAA (7:1). */
+    :root.a11y-hc {
+      --ink:       #000000;
+      --ink-2:     #1A1A1A;
+      --ink-3:     #303030;
+      --ink-4:     #3D3D3D;
+      --bg:        #FFFFFF;
+      --surface:   #FFFFFF;
+      --surface-2: #E4E4E4;
+      --line:      #000000;
+      --line-2:    #000000;
+      --danger:    #A3231A;
+      --warn:      #6E4400;
+      --ok-deep:   #12401A;
+      --focus:     #000000;
+      --cat-blue:  #0B3350;
+      --cat-plum:  #3A2450;
+      --cat-rose:  #5E1735;
+      --cat-green: #12401A;
+    }
+
+    /* ── Tier 3 · Higher contrast ─────────────────────────────────────
+       Maximum separation. Pure #FFFFFF throughout with no tinted
+       surfaces at all, pure black text, and accents dropped to near-black
+       so that even a saturated brand colour reads as a dark mass rather
+       than a hue. Every text token here is at or near 21:1 — the
+       theoretical ceiling. Borders go thicker again.                   */
+    :root.a11y-hc2 {
+      --ink:       #000000;
+      --ink-2:     #000000;
+      --ink-3:     #121212;
+      --ink-4:     #1C1C1C;
+      --bg:        #FFFFFF;
+      --surface:   #FFFFFF;
+      --surface-2: #FFFFFF;
+      --line:      #000000;
+      --line-2:    #000000;
+      --danger:    #6E1109;
+      --warn:      #402700;
+      --ok-deep:   #062611;
+      --focus:     #000000;
+      --cat-blue:  #041D30;
+      --cat-plum:  #210F33;
+      --cat-rose:  #3A0620;
+      --cat-green: #062611;
+    }
+    /* Borders carry meaning once colour fill is flattened, so thicken them. */
+    :root.a11y-hc [style*="border:1px"],
+    :root.a11y-hc [style*="border-bottom:1px"],
+    :root.a11y-hc [style*="border-top:1px"],
+    :root.a11y-hc [style*="border-left:3px"] { border-width: 2px !important; }
+    :root.a11y-hc2 [style*="border:1px"],
+    :root.a11y-hc2 [style*="border-bottom:1px"],
+    :root.a11y-hc2 [style*="border-top:1px"],
+    :root.a11y-hc2 [style*="border-left:3px"] { border-width: 3px !important; }
+    /* The paper grid texture is noise once the ground goes white. */
+    :root.a11y-hc [style*="background-image"],
+    :root.a11y-hc2 [style*="background-image"] { background-image: none !important; }
+    /* Tier 3 removes the tinted accent washes behind chips and badges —
+       at this level a faint colour block is just glare. */
+    :root.a11y-hc2 [style*="border-radius:999px"] { background-color: #FFFFFF !important; }
+    /* SVG presentation attributes ignore var(), so restate them as CSS,
+       which outranks the attribute. */
+    :root.a11y-hc svg[stroke="#9A9684"] { stroke: #303030 !important; }
+    :root.a11y-hc svg[stroke="#6A6656"] { stroke: #1A1A1A !important; }
+    :root.a11y-hc svg[stroke="#23211A"] { stroke: #000000 !important; }
+    :root.a11y-hc svg[stroke="#EAE7DC"] { stroke: #767676 !important; }
+    :root.a11y-hc2 svg[stroke="#9A9684"],
+    :root.a11y-hc2 svg[stroke="#6A6656"],
+    :root.a11y-hc2 svg[stroke="#23211A"] { stroke: #000000 !important; }
+    :root.a11y-hc2 svg[stroke="#EAE7DC"] { stroke: #4A4A4A !important; }
+
+    /* ── Colour-vision-safe semantics ─────────────────────────────────
+       The app leans on green-drop / red-hike, which is precisely the pair
+       red-green colour blindness collapses — around 1 in 12 men. This
+       swaps the semantic pair for blue/orange, distinguishable under
+       deuteranopia, protanopia and tritanopia alike. Arrows and wording
+       (↓ DROP / ↑ HIKE) already carry the meaning without colour.       */
+    :root.a11y-cvd {
+      --danger: #8F3C00;   /* orange — was red; 6.6:1 on the paper ground */
+      --warn:   #7A5C00;
+      --ok-deep:#00457A;   /* blue   — was green */
+    }
+    :root.a11y-cvd { --cat-rose: #7A4B00; --cat-green: #00457A; }
+    :root.a11y-cvd.a11y-hc { --danger: #8F3C00; --warn: #5E4700; --ok-deep: #003A66;
+      --cat-rose: #5E3A00; --cat-green: #003A66; }
+    :root.a11y-cvd.a11y-hc2 { --danger: #5A2600; --warn: #3D2D00; --ok-deep: #002440;
+      --cat-rose: #3D2500; --cat-green: #002440; }
+
+    /* ── Large-text resilience ────────────────────────────────────────
+       Buttons and rows were authored at fixed pixel heights; those became
+       min-heights in the markup so they grow with the text instead of
+       clipping it. These rules cover what a min-height alone can't.     */
+    button, input, [style*="cursor:pointer"] { line-height: 1.25; }
+    /* Chips and pills must wrap rather than shove their row sideways. */
+    [style*="border-radius:999px"] { white-space: normal; }
+    /* Bottom nav: labels scale more gently and may wrap onto two lines —
+       five items in a 390px frame runs out of width long before the body
+       copy does. */
+    .findr-nav { min-height: 66px; }
+    .findr-nav span { white-space: normal !important; overflow-wrap: anywhere; text-align: center; }
+    .findr-nav .findr-nav-label { font-size: calc(9.5px * min(var(--ts), 1.35)) !important; }
+    /* Never let a long product name or price blow out its row. */
+    p, h1, h2, h3, span { overflow-wrap: break-word; }
+
+    /* ── Focus visibility ─────────────────────────────────────────────
+       Keyboard and switch-control users need to see where they are; the
+       original had no focus styling at all. */
+    :focus-visible {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+      border-radius: 3px;
+    }
+
+    /* ── Text-size slider ─────────────────────────────────────────────
+       Sized well past the 44px minimum touch target — a 24px thumb on a
+       14px track is far easier to hit with an unsteady hand. */
+    .findr-slider { -webkit-appearance: none; appearance: none; width: 100%; height: 48px; background: transparent; cursor: pointer; display: block; }
+    .findr-slider::-webkit-slider-runnable-track { height: 14px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+    .findr-slider::-moz-range-track { height: 14px; border-radius: 999px; background: var(--surface-2); border: 1px solid var(--line); }
+    .findr-slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 30px; height: 30px; margin-top: -8px; border-radius: 50%; background: var(--findr-accent, #4E7A52); border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+    .findr-slider::-moz-range-thumb { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--surface); background: var(--findr-accent, #4E7A52); box-shadow: 0 1px 4px rgba(0,0,0,0.35); }
+    :root.a11y-hc .findr-slider::-webkit-slider-thumb { border-color: #FFFFFF; box-shadow: 0 0 0 2px #000; }
+    :root.a11y-hc .findr-slider::-moz-range-thumb { border-color: #FFFFFF; box-shadow: 0 0 0 2px #000; }
+
     /* ═══ RESPONSIVE SHELL ═══════════════════════════════════════════════
        Desktop / laptop  →  phone frame on a dark stage, auto-fitted to the
                             window via --findr-scale (set in <head>).
@@ -147,102 +327,102 @@ window.__resources = {
 
       <!-- ============ LOGIN ============ -->
       <sc-if value="{{ isLogin }}" hint-placeholder-val="{{ false }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:0 28px; background-color:#F4F1E8; background-image: {{ gridBg }}; background-size:24px 24px;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:0 28px; background-color:var(--bg); background-image: {{ gridBg }}; background-size:24px 24px;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
               <div style="width:40px; height:40px; border-radius:4px; background: {{ a }}; display:flex; align-items:center; justify-content:center;">
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#F4F1E8" stroke-width="1.9"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3" stroke-linecap="round"></path></svg>
               </div>
-              <h1 class="serif" style="font-size:30px; font-weight:600; color:#23211A; letter-spacing:-0.01em;">Findr</h1>
+              <h1 class="serif" style="font-size:calc(30px * var(--ts)); font-weight:600; color:var(--ink); letter-spacing:-0.01em;">Findr</h1>
             </div>
-            <h2 class="serif" style="font-size:27px; font-weight:600; color:#23211A; line-height:1.2; letter-spacing:-0.01em;">Scan anything.<br>Pay the lowest price.</h2>
-            <p style="font-size:13.5px; color:#6A6656; line-height:1.55; margin-top:12px; max-width:280px;">Point your camera at any product and compare it across every store in seconds — real prices, real deals.</p>
+            <h2 class="serif" style="font-size:calc(27px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2; letter-spacing:-0.01em;">Scan anything.<br>Pay the lowest price.</h2>
+            <p style="font-size:calc(13.5px * var(--ts)); color:var(--ink-2); line-height:1.55; margin-top:12px; max-width:280px;">Point your camera at any product and compare it across every store in seconds — real prices, real deals.</p>
             <div style="display:flex; gap:18px; margin-top:22px;">
-              <div><p class="mono" style="font-size:17px; font-weight:500; color: {{ a }}">4.2M</p><p class="mono" style="font-size:10px; color:#9A9684;">listings</p></div>
-              <div><p class="mono" style="font-size:17px; font-weight:500; color: {{ a }}">90-day</p><p class="mono" style="font-size:10px; color:#9A9684;">price history</p></div>
-              <div><p class="mono" style="font-size:17px; font-weight:500; color: {{ a }}">5 free</p><p class="mono" style="font-size:10px; color:#9A9684;">scans</p></div>
+              <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">4.2M</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">listings</p></div>
+              <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">90-day</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">price history</p></div>
+              <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">5 free</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">scans</p></div>
             </div>
           </div>
           <div style="flex-shrink:0; padding-bottom:34px;">
-            <button onClick="{{ login }}" style-active="transform:scale(0.99)" style="width:100%; height:50px; border:none; border-radius:4px; background:#23211A; color:#F4F1E8; font-family:'Public Sans'; font-size:15px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
+            <button onClick="{{ login }}" style-active="transform:scale(0.99)" style="width:100%; min-height:50px; border:none; border-radius:4px; background:var(--ink); color:var(--bg); font-family:'Public Sans'; font-size:calc(15px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M21.35 11.1H12v2.98h5.35c-.5 2.4-2.55 3.78-5.35 3.78a5.86 5.86 0 0 1 0-11.72c1.44 0 2.74.51 3.76 1.5l2.25-2.25A9.32 9.32 0 0 0 12 2.7a9.3 9.3 0 1 0 0 18.6c5.37 0 8.9-3.78 8.9-9.1 0-.6-.06-1.4-.16-1.1z" fill="#F4F1E8"></path></svg>
               Continue with Google
             </button>
-            <p class="mono" style="font-size:9.5px; color:#9A9684; text-align:center; margin-top:12px; line-height:1.5;">Free account · 5 scans/month · upgrade anytime</p>
+            <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:12px; line-height:1.5;">Free account · 5 scans/month · upgrade anytime</p>
           </div>
         </div>
       </sc-if>
 
       <!-- ============ SCAN / HOME ============ -->
       <sc-if value="{{ isScan }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background-color:#F4F1E8; background-image: {{ gridBg }}; background-size:24px 24px;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background-color:var(--bg); background-image: {{ gridBg }}; background-size:24px 24px;">
           <div style="padding:22px 20px 14px; flex-shrink:0;">
-            <div style="display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid #23211A; padding-bottom:9px;">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--ink); padding-bottom:9px;">
               <div>
-                <h1 class="serif" style="font-size:26px; font-weight:600; color:#23211A; letter-spacing:-0.01em; line-height:1;">Findr</h1>
-                <span class="mono" style="font-size:10px; color:#9A9684; letter-spacing:0.03em;">SE ASIA · JUL 2026</span>
+                <h1 class="serif" style="font-size:calc(26px * var(--ts)); font-weight:600; color:var(--ink); letter-spacing:-0.01em; line-height:1;">Findr</h1>
+                <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.03em;">SE ASIA · JUL 2026</span>
               </div>
-              <div style="display:flex; align-items:center; gap:6px; padding:6px 11px; border:1px solid #DED9C9; border-radius:999px; background:#FBFAF5;">
+              <div style="display:flex; align-items:center; gap:6px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; background:var(--surface);">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="{{ a }}" stroke-width="1.8"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2" stroke-linecap="round"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                <span class="mono" style="font-size:11px; font-weight:500; color:#23211A;">{{ creditLabel }}</span>
+                <span class="mono" style="font-size:calc(11px * var(--ts)); font-weight:500; color:var(--ink);">{{ creditLabel }}</span>
               </div>
             </div>
           </div>
 
           <div style="flex:1; overflow-y:auto; padding:2px 20px 20px;">
-            <div style="display:flex; align-items:center; gap:9px; height:38px; padding:0 14px; background:#EAE7DC; border:1px solid #DED9C9; border-radius:999px; margin-bottom:6px;">
+            <div style="display:flex; align-items:center; gap:9px; min-height:46px; padding:0 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; margin-bottom:6px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6A6656" stroke-width="1.6"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3" stroke-linecap="round"></path></svg>
-              <input type="text" value="{{ searchQuery }}" onChange="{{ onSearchInput }}" onKeyDown="{{ onSearchKey }}" placeholder="Search a product name…" style="flex:1; border:none; background:none; outline:none; font-family:'Public Sans'; font-size:13.5px; color:#23211A;"/>
+              <input type="text" value="{{ searchQuery }}" onChange="{{ onSearchInput }}" onKeyDown="{{ onSearchKey }}" placeholder="Search a product name…" style="flex:1; min-height:44px; border:none; background:none; outline:none; font-family:'Public Sans'; font-size:calc(13.5px * var(--ts)); color:var(--ink);"/>
             </div>
             <sc-if value="{{ showSearchHint }}" hint-placeholder-val="{{ false }}">
-              <p class="mono" style="font-size:10px; color:#A6503F; margin:0 0 10px 4px;">No match — try “Sony”, “AirPods”, “Switch”…</p>
+              <p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--danger); margin:0 0 10px 4px;">No match — try “Sony”, “AirPods”, “Switch”…</p>
             </sc-if>
             <div style="height:10px;"></div>
 
             <!-- viewfinder: content region -->
-            <div style="position:relative; height:264px; border-radius:4px; overflow:hidden; border:1px solid #DED9C9; background:#23211A;">
+            <div style="position:relative; height:264px; border-radius:4px; overflow:hidden; border:1px solid var(--line); background:var(--ink);">
               <div style="width:100%; height:100%; background:#0f1512; background-image:url('assets/camera-scene.jpg'); background-size:cover; background-position:center;"></div>
               <div style="position:absolute; top:12px; left:12px; display:flex; align-items:center; gap:7px; padding:5px 10px; background:rgba(28,26,21,0.55); border-radius:999px;">
                 <span style="width:6px; height:6px; border-radius:50%; background: {{ a }}"></span>
-                <span class="mono" style="font-size:10px; color:#F4F1E8; letter-spacing:0.03em;">CAMERA</span>
+                <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--bg); letter-spacing:0.03em;">CAMERA</span>
               </div>
               <div style="position:absolute; width:190px; height:190px; top:50%; left:50%; transform:translate(-50%,-50%);">
-                <div style="position:absolute; top:0; left:0; width:26px; height:26px; border-top:2px solid #F4F1E8; border-left:2px solid #F4F1E8;"></div>
-                <div style="position:absolute; top:0; right:0; width:26px; height:26px; border-top:2px solid #F4F1E8; border-right:2px solid #F4F1E8;"></div>
-                <div style="position:absolute; bottom:0; left:0; width:26px; height:26px; border-bottom:2px solid #F4F1E8; border-left:2px solid #F4F1E8;"></div>
-                <div style="position:absolute; bottom:0; right:0; width:26px; height:26px; border-bottom:2px solid #F4F1E8; border-right:2px solid #F4F1E8;"></div>
+                <div style="position:absolute; top:0; left:0; width:26px; height:26px; border-top:2px solid var(--bg); border-left:2px solid var(--bg);"></div>
+                <div style="position:absolute; top:0; right:0; width:26px; height:26px; border-top:2px solid var(--bg); border-right:2px solid var(--bg);"></div>
+                <div style="position:absolute; bottom:0; left:0; width:26px; height:26px; border-bottom:2px solid var(--bg); border-left:2px solid var(--bg);"></div>
+                <div style="position:absolute; bottom:0; right:0; width:26px; height:26px; border-bottom:2px solid var(--bg); border-right:2px solid var(--bg);"></div>
                 <div style="position:absolute; left:4%; right:4%; height:1.5px; background: {{ a }}; animation:scanSweep 2.8s ease-in-out infinite;"></div>
               </div>
             </div>
 
-            <button onClick="{{ startScan }}" style-active="transform:scale(0.99)" style="width:100%; height:44px; margin-top:14px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.1s;">
+            <button onClick="{{ startScan }}" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:14px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.1s;">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2" stroke-linecap="round"></path><circle cx="12" cy="12" r="3.2"></circle></svg>
               Scan to compare
             </button>
 
             <div style="display:flex; align-items:baseline; justify-content:space-between; margin:24px 0 10px;">
-              <h2 class="serif" style="font-size:19px; font-weight:600; color:#23211A;">Recent scans</h2>
-              <span onClick="{{ goWatchlist }}" style="font-size:12px; color: {{ a }}; font-weight:600; cursor:pointer;">Watchlist →</span>
+              <h2 class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink);">Recent scans</h2>
+              <span onClick="{{ goWatchlist }}" style="font-size:calc(12px * var(--ts)); color: {{ a }}; font-weight:600; cursor:pointer;">Watchlist →</span>
             </div>
-            <div style="border-top:1px solid #DED9C9;">
+            <div style="border-top:1px solid var(--line);">
               <sc-for list="{{ recents }}" as="r" hint-placeholder-count="3">
-                <div onClick="{{ r.onOpen }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; gap:12px; padding:11px 4px; border-bottom:1px solid #DED9C9; cursor:pointer;">
-                  <div style="width:46px; height:46px; border-radius:4px; border:1px solid #DED9C9; background:#EAE7DC; flex-shrink:0; overflow:hidden;">{{ r.imgEl }}</div>
+                <div onClick="{{ r.onOpen }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; gap:12px; padding:11px 4px; border-bottom:1px solid var(--line); cursor:pointer;">
+                  <div style="width:46px; height:46px; border-radius:4px; border:1px solid var(--line); background:var(--surface-2); flex-shrink:0; overflow:hidden;">{{ r.imgEl }}</div>
                   <div style="flex:1; min-width:0;">
-                    <p style="font-size:13.5px; font-weight:600; color:#23211A; line-height:1.25;">{{ r.name }}</p>
-                    <p class="mono" style="font-size:10.5px; color:#9A9684; margin-top:3px;">{{ r.scanned }}</p>
+                    <p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.25;">{{ r.name }}</p>
+                    <p class="mono" style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); margin-top:3px;">{{ r.scanned }}</p>
                   </div>
                   <div style="text-align:right;">
-                    <p class="mono" style="font-size:13.5px; font-weight:500; color:#23211A;">S${{ r.price }}</p>
-                    <p class="mono" style="font-size:10px; margin-top:2px; color: {{ r.deltaColor }}">{{ r.delta }}</p>
+                    <p class="mono" style="font-size:calc(13.5px * var(--ts)); font-weight:500; color:var(--ink);">S${{ r.price }}</p>
+                    <p class="mono" style="font-size:calc(10px * var(--ts)); margin-top:2px; color: {{ r.deltaColor }}">{{ r.delta }}</p>
                   </div>
                 </div>
               </sc-for>
             </div>
 
-            <div style="margin-top:18px; padding:13px 14px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5; display:flex; gap:11px;">
+            <div style="margin-top:18px; padding:13px 14px; border:1px solid var(--line); border-radius:4px; background:var(--surface); display:flex; gap:11px;">
               <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="{{ a }}" stroke-width="1.6" style="flex-shrink:0; margin-top:1px;"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"></path><path d="M9 12l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                <p style="font-size:12px; color:#6A6656; line-height:1.5;"><span style="color:#23211A; font-weight:600;">Findr never fakes a discount.</span> Every “sale” is checked against 90 days of real price history before we call it one.</p>
+                <p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); line-height:1.5;"><span style="color:var(--ink); font-weight:600;">Findr never fakes a discount.</span> Every “sale” is checked against 90 days of real price history before we call it one.</p>
             </div>
           </div>
         </div>
@@ -250,16 +430,16 @@ window.__resources = {
 
       <!-- ============ PROCESSING ============ -->
       <sc-if value="{{ isProcessing }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 40px; background-color:#F4F1E8; background-image: {{ gridBg }}; background-size:24px 24px;">
-          <div style="position:relative; width:172px; height:172px; border-radius:4px; overflow:hidden; border:1px solid #DED9C9;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:0 40px; background-color:var(--bg); background-image: {{ gridBg }}; background-size:24px 24px;">
+          <div style="position:relative; width:172px; height:172px; border-radius:4px; overflow:hidden; border:1px solid var(--line);">
             <div style="width:100%; height:100%; background:linear-gradient(150deg,#2b3a34,#0f1512);"></div>
             <div style="position:absolute; left:0; right:0; height:1.5px; background: {{ a }}; animation:scanSweep 1.5s linear infinite;"></div>
           </div>
-          <p class="serif" style="font-size:19px; font-weight:600; color:#23211A; margin-top:26px;">{{ scanStatus }}</p>
-          <div style="width:150px; height:3px; background:#EAE7DC; border-radius:2px; margin-top:14px; overflow:hidden; position:relative;">
+          <p class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink); margin-top:26px;">{{ scanStatus }}</p>
+          <div style="width:150px; height:3px; background:var(--surface-2); border-radius:2px; margin-top:14px; overflow:hidden; position:relative;">
             <div style="position:absolute; top:0; left:0; height:100%; width:40%; border-radius:2px; background: {{ a }}; animation:barwork 1.1s ease-in-out infinite;"></div>
           </div>
-          <p class="mono" style="font-size:10.5px; color:#9A9684; margin-top:14px; letter-spacing:0.02em;">on-device · no data leaves your phone</p>
+          <p class="mono" style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); margin-top:14px; letter-spacing:0.02em;">on-device · no data leaves your phone</p>
           <div style="width:100%; max-width:280px; margin-top:30px; display:flex; flex-direction:column; gap:10px;">
             <div style="display:flex; gap:11px; align-items:center;">
               <div class="shimmer" style="width:44px; height:44px; border-radius:4px; flex-shrink:0;"></div>
@@ -276,13 +456,13 @@ window.__resources = {
 
       <!-- ============ PRODUCT ============ -->
       <sc-if value="{{ isProduct }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px 12px; flex-shrink:0; border-bottom:1px solid #DED9C9;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="display:flex; align-items:center; justify-content:space-between; padding:14px 20px 12px; flex-shrink:0; border-bottom:1px solid var(--line);">
             <button onClick="{{ goScan }}" style="display:flex; align-items:center; gap:6px; border:none; background:none; cursor:pointer;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6A6656" stroke-width="1.7"><path d="M15 18l-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              <span style="font-size:12px; color:#6A6656; font-weight:600;">Scan</span>
+              <span style="font-size:calc(12px * var(--ts)); color:var(--ink-2); font-weight:600;">Scan</span>
             </button>
-            <span class="mono" style="font-size:10px; color:#9A9684; letter-spacing:0.04em;">DEAL BREAKDOWN</span>
+            <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.04em;">DEAL BREAKDOWN</span>
             <button onClick="{{ p.onAddList }}" style="border:none; background:none; cursor:pointer; padding:2px; display:flex;">
               <svg viewBox="0 0 24 24" width="19" height="19" fill="{{ p.savedFill }}" stroke="{{ a }}" stroke-width="1.7"><path d="M6 4h12a1 1 0 0 1 1 1v15l-7-4-7 4V5a1 1 0 0 1 1-1z" stroke-linejoin="round"></path></svg>
             </button>
@@ -290,115 +470,115 @@ window.__resources = {
 
           <div style="flex:1; overflow-y:auto; padding:16px 20px 24px;">
             <div style="display:flex; gap:14px; align-items:center;">
-              <div style="width:70px; height:70px; border-radius:4px; border:1px solid #DED9C9; background:#EAE7DC; flex-shrink:0; overflow:hidden;">{{ p.imgEl }}</div>
+              <div style="width:70px; height:70px; border-radius:4px; border:1px solid var(--line); background:var(--surface-2); flex-shrink:0; overflow:hidden;">{{ p.imgEl }}</div>
               <div style="flex:1;">
-                <span class="mono" style="font-size:10px; font-weight:500; letter-spacing:0.04em; color: {{ p.tierColor }}">{{ p.tierLabel }}</span>
-                <p class="serif" style="font-size:19px; font-weight:600; color:#23211A; line-height:1.15; margin-top:2px;">{{ p.name }}</p>
+                <span class="mono" style="font-size:calc(10px * var(--ts)); font-weight:500; letter-spacing:0.04em; color: {{ p.tierColor }}">{{ p.tierLabel }}</span>
+                <p class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.15; margin-top:2px;">{{ p.name }}</p>
                 <div style="display:flex; align-items:baseline; gap:8px; margin-top:5px;">
-                  <span class="mono" style="font-size:22px; font-weight:500; color:#23211A;">S${{ p.price }}</span>
-                  <span class="mono" style="font-size:11px; color: {{ a }};">save S${{ p.saveVsTypical }}</span>
+                  <span class="mono" style="font-size:calc(22px * var(--ts)); font-weight:500; color:var(--ink);">S${{ p.price }}</span>
+                  <span class="mono" style="font-size:calc(11px * var(--ts)); color: {{ a }};">save S${{ p.saveVsTypical }}</span>
                 </div>
               </div>
             </div>
 
             <!-- pro paywall -->
             <sc-if value="{{ p.locked }}" hint-placeholder-val="{{ false }}">
-              <div onClick="{{ p.unlockPro }}" style-active="transform:scale(0.99)" style="margin-top:18px; border-radius:4px; padding:18px; background:#23211A; cursor:pointer;">
+              <div onClick="{{ p.unlockPro }}" style-active="transform:scale(0.99)" style="margin-top:18px; border-radius:4px; padding:18px; background:var(--ink); cursor:pointer;">
                 <div style="display:flex; align-items:center; gap:9px;">
                   <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#F4F1E8" stroke-width="1.7"><rect x="5" y="11" width="14" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
-                  <span class="serif" style="font-size:16px; font-weight:600; color:#F4F1E8;">Unlock the full breakdown</span>
+                  <span class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--bg);">Unlock the full breakdown</span>
                 </div>
-                <p style="font-size:12px; color:#B9B4A3; line-height:1.5; margin-top:8px;">Deal verification, 90-day history, buy-now-or-wait timing, and owner reviews — with Findr Pro.</p>
-                <div style="display:flex; align-items:center; justify-content:center; gap:8px; height:42px; margin-top:14px; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-size:13.5px; font-weight:700;">Unlock with Findr Pro · S$3.99/mo</div>
+                <p style="font-size:calc(12px * var(--ts)); color:var(--ink-4); line-height:1.5; margin-top:8px;">Deal verification, 90-day history, buy-now-or-wait timing, and owner reviews — with Findr Pro.</p>
+                <div style="display:flex; align-items:center; justify-content:center; gap:8px; min-height:42px; margin-top:14px; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-size:calc(13.5px * var(--ts)); font-weight:700;">Unlock with Findr Pro · S$3.99/mo</div>
               </div>
             </sc-if>
 
             <!-- deal verification -->
             <sc-if value="{{ p.showInsights }}" hint-placeholder-val="{{ true }}">
-            <div style="margin-top:18px; background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; padding:15px;">
+            <div style="margin-top:18px; background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:15px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="{{ a }}" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"></path></svg>
-                <span class="serif" style="font-size:16px; font-weight:600; color:#23211A;">Deal verification</span>
-                <span class="mono" style="margin-left:auto; font-size:10px; font-weight:500; padding:3px 9px; border-radius:999px; background: {{ p.honestyBg }}; color: {{ p.honestyColor }}">{{ p.honestyLabel }}</span>
+                <span class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--ink);">Deal verification</span>
+                <span class="mono" style="margin-left:auto; font-size:calc(10px * var(--ts)); font-weight:500; padding:3px 9px; border-radius:999px; background: {{ p.honestyBg }}; color: {{ p.honestyColor }}">{{ p.honestyLabel }}</span>
               </div>
-              <div style="position:relative; height:6px; border-radius:999px; margin:16px 0 7px; background:linear-gradient(90deg,#A6503F,#B07A45,{{ a }});">
-                <div style="position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:#FBFAF5; border:2px solid #23211A; transform:translate(-50%,-50%); left: {{ p.honestyLeft }}"></div>
+              <div style="position:relative; height:6px; border-radius:999px; margin:16px 0 7px; background:linear-gradient(90deg,var(--danger),var(--warn),{{ a }});">
+                <div style="position:absolute; top:50%; width:14px; height:14px; border-radius:50%; background:var(--surface); border:2px solid var(--ink); transform:translate(-50%,-50%); left: {{ p.honestyLeft }}"></div>
               </div>
-              <div class="mono" style="display:flex; justify-content:space-between; font-size:9px; color:#9A9684; letter-spacing:0.02em;"><span>OVERPRICED</span><span>FAIR</span><span>GENUINE</span></div>
-              <p style="font-size:12px; color:#6A6656; line-height:1.5; margin-top:12px;">{{ p.honestyNote }}</p>
-              <div style="display:flex; align-items:flex-end; gap:12px; margin-top:14px; padding-top:13px; border-top:1px solid #EAE7DC;">
+              <div class="mono" style="display:flex; justify-content:space-between; font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.02em;"><span>OVERPRICED</span><span>FAIR</span><span>GENUINE</span></div>
+              <p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); line-height:1.5; margin-top:12px;">{{ p.honestyNote }}</p>
+              <div style="display:flex; align-items:flex-end; gap:12px; margin-top:14px; padding-top:13px; border-top:1px solid var(--surface-2);">
                 <div style="flex:1;">
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.04em; margin-bottom:7px;">90-DAY PRICE</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.04em; margin-bottom:7px;">90-DAY PRICE</p>
                   <svg viewBox="0 0 100 32" preserveAspectRatio="none" style="width:100%; height:36px;"><polyline points="{{ p.sparkPoints }}" fill="none" stroke="{{ a }}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
                 </div>
                 <div style="text-align:right;">
-                  <p class="mono" style="font-size:9px; color:#9A9684;">TYPICAL</p>
-                  <p class="mono" style="font-size:12px; color:#9A9684; text-decoration:line-through;">S${{ p.typical }}</p>
-                  <p class="mono" style="font-size:9px; color: {{ a }}; margin-top:4px;">NOW</p>
-                  <p class="mono" style="font-size:14px; font-weight:500; color: {{ a }}">S${{ p.price }}</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3);">TYPICAL</p>
+                  <p class="mono" style="font-size:calc(12px * var(--ts)); color:var(--ink-3); text-decoration:line-through;">S${{ p.typical }}</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color: {{ a }}; margin-top:4px;">NOW</p>
+                  <p class="mono" style="font-size:calc(14px * var(--ts)); font-weight:500; color: {{ a }}">S${{ p.price }}</p>
                 </div>
               </div>
             </div>
 
             <!-- buy now or wait -->
-            <div style="margin-top:12px; background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; padding:15px;">
+            <div style="margin-top:12px; background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:15px;">
               <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="{{ a }}" stroke-width="1.6"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                <span class="serif" style="font-size:16px; font-weight:600; color:#23211A;">Buy now or wait?</span>
-                <span class="mono" style="margin-left:auto; font-size:10px; color:#9A9684;">{{ p.timing.conf }} confidence</span>
+                <span class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--ink);">Buy now or wait?</span>
+                <span class="mono" style="margin-left:auto; font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.timing.conf }} confidence</span>
               </div>
-              <div style="display:flex; border:1px solid #DED9C9; border-radius:4px; overflow:hidden; margin-bottom:12px;">
-                <button onClick="{{ p.setWait }}" style="flex:1; padding:8px; border:none; cursor:pointer; font-family:'Public Sans'; font-size:12px; font-weight:600; background: {{ p.waitTabBg }}; color: {{ p.waitTabColor }}">I can wait</button>
-                <button onClick="{{ p.setNow }}" style="flex:1; padding:8px; border:none; cursor:pointer; font-family:'Public Sans'; font-size:12px; font-weight:600; background: {{ p.nowTabBg }}; color: {{ p.nowTabColor }}">I need it today</button>
+              <div style="display:flex; border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-bottom:12px;">
+                <button onClick="{{ p.setWait }}" style="flex:1; padding:8px; border:none; cursor:pointer; font-family:'Public Sans'; font-size:calc(12px * var(--ts)); font-weight:600; background: {{ p.waitTabBg }}; color: {{ p.waitTabColor }}">I can wait</button>
+                <button onClick="{{ p.setNow }}" style="flex:1; padding:8px; border:none; cursor:pointer; font-family:'Public Sans'; font-size:calc(12px * var(--ts)); font-weight:600; background: {{ p.nowTabBg }}; color: {{ p.nowTabColor }}">I need it today</button>
               </div>
-              <p class="serif" style="font-size:17px; font-weight:600; color: {{ p.timing.color }}">{{ p.timing.verdict }}</p>
-              <p style="font-size:12px; color:#6A6656; line-height:1.5; margin-top:5px;">{{ p.timing.line }}</p>
+              <p class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color: {{ p.timing.color }}">{{ p.timing.verdict }}</p>
+              <p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); line-height:1.5; margin-top:5px;">{{ p.timing.line }}</p>
               <sc-if value="{{ p.timing.showWait }}" hint-placeholder-val="{{ false }}">
                 <div style="margin-top:9px; padding:8px 11px; border-radius:4px; background: {{ aMuted }}; display:flex; align-items:center; gap:7px;">
                   <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="{{ a }}" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-                  <span class="mono" style="font-size:10.5px; color: {{ a }}; font-weight:500;">{{ p.timing.sub }}</span>
+                  <span class="mono" style="font-size:calc(10.5px * var(--ts)); color: {{ a }}; font-weight:500;">{{ p.timing.sub }}</span>
                 </div>
               </sc-if>
-              <div style="display:flex; align-items:center; gap:7px; margin-top:12px; padding-top:12px; border-top:1px solid #EAE7DC;">
+              <div style="display:flex; align-items:center; gap:7px; margin-top:12px; padding-top:12px; border-top:1px solid var(--surface-2);">
                 <span style="width:6px; height:6px; border-radius:50%; background: {{ p.stockColor }}"></span>
-                <span class="mono" style="font-size:10.5px; color:#6A6656;">{{ p.stock }}</span>
+                <span class="mono" style="font-size:calc(10.5px * var(--ts)); color:var(--ink-2);">{{ p.stock }}</span>
               </div>
             </div>
             </sc-if>
 
             <!-- true lowest -->
             <div style="display:flex; align-items:baseline; gap:8px; margin:20px 0 10px;">
-              <h2 class="serif" style="font-size:17px; font-weight:600; color:#23211A;">True lowest price</h2>
-              <span class="mono" style="font-size:10px; color:#9A9684;">{{ p.retailerCount }} sellers · stacked</span>
+              <h2 class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">True lowest price</h2>
+              <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.retailerCount }} sellers · stacked</span>
             </div>
             <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;">
-              <button onClick="{{ p.openFilter }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; gap:7px; padding:7px 12px; border:1px solid #DED9C9; border-radius:999px; background:#FBFAF5; cursor:pointer;">
+              <button onClick="{{ p.openFilter }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; gap:7px; padding:7px 12px; border:1px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer;">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#23211A" stroke-width="1.7"><polygon points="21 4 3 4 10 12 10 19 14 21 14 12 21 4" stroke-linejoin="round"></polygon></svg>
-                <span style="font-size:11.5px; font-weight:600; color:#23211A;">Filter &amp; sort</span>
+                <span style="font-size:calc(11.5px * var(--ts)); font-weight:600; color:var(--ink);">Filter &amp; sort</span>
                 <sc-if value="{{ p.filterActive }}" hint-placeholder-val="{{ false }}"><span style="width:6px; height:6px; border-radius:50%; background: {{ a }}"></span></sc-if>
               </button>
-              <span class="mono" style="font-size:10px; color:#9A9684;">{{ p.filterSummary }}</span>
+              <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.filterSummary }}</span>
             </div>
             <div style="display:flex; flex-direction:column; gap:11px;">
               <sc-for list="{{ p.retailers }}" as="r" hint-placeholder-count="3">
-                <div style="background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; overflow:hidden; border-left:3px solid {{ r.edge }}; animation:dropBounce 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both; animation-delay: {{ r.animDelay }}">
-                  <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 13px 9px; border-bottom:1px solid #EAE7DC;">
+                <div style="background:var(--surface); border:1px solid var(--line); border-radius:4px; overflow:hidden; border-left:3px solid {{ r.edge }}; animation:dropBounce 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both; animation-delay: {{ r.animDelay }}">
+                  <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 13px 9px; border-bottom:1px solid var(--surface-2);">
                     <div style="display:flex; align-items:center; gap:10px;">
-                      <span style="font-size:20px;">{{ r.logo }}</span>
+                      <span style="font-size:calc(20px * var(--ts));">{{ r.logo }}</span>
                       <div>
-                        <p style="font-size:13px; font-weight:600; color:#23211A;">{{ r.name }}</p>
-                        <p class="mono" style="font-size:9.5px; color:#9A9684; margin-top:1px;">{{ r.from }} · {{ r.type }} · {{ r.metaLine }}</p>
+                        <p style="font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink);">{{ r.name }}</p>
+                        <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); margin-top:1px;">{{ r.from }} · {{ r.type }} · {{ r.metaLine }}</p>
                       </div>
                     </div>
                     <div style="text-align:right;">
-                      <span class="mono" style="display:inline-block; font-size:9px; font-weight:500; padding:2px 7px; border-radius:999px; margin-bottom:3px; background: {{ r.tagBg }}; color: {{ r.tagText }}; animation: {{ r.tagAnim }}">{{ r.tagLabel }}</span>
-                      <p class="mono" style="font-size:16px; font-weight:500; color:#23211A;">S${{ r.finalStr }}</p>
+                      <span class="mono" style="display:inline-block; font-size:calc(9px * var(--ts)); font-weight:500; padding:2px 7px; border-radius:999px; margin-bottom:3px; background: {{ r.tagBg }}; color: {{ r.tagText }}; animation: {{ r.tagAnim }}">{{ r.tagLabel }}</span>
+                      <p class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color:var(--ink);">S${{ r.finalStr }}</p>
                     </div>
                   </div>
                   <sc-if value="{{ r.fake }}" hint-placeholder-val="{{ false }}">
-                    <div style="display:flex; align-items:flex-start; gap:7px; padding:8px 13px; background:rgba(166,80,63,0.08); border-bottom:1px solid #EAE7DC;">
+                    <div style="display:flex; align-items:flex-start; gap:7px; padding:8px 13px; background:rgba(166,80,63,0.08); border-bottom:1px solid var(--surface-2);">
                       <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#A6503F" stroke-width="1.7" style="flex-shrink:0; margin-top:1px;"><path d="M12 9v4M12 17h.01M10.3 4.3L2 18a2 2 0 0 0 1.7 3h16.6a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z" stroke-linejoin="round"></path></svg>
-                      <span style="font-size:10.5px; color:#A6503F; line-height:1.4;">{{ r.fake }}</span>
+                      <span style="font-size:calc(10.5px * var(--ts)); color:var(--danger); line-height:1.4;">{{ r.fake }}</span>
                     </div>
                   </sc-if>
                   <div style="padding:10px 13px;">
@@ -406,12 +586,12 @@ window.__resources = {
                       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
                         <button onClick="{{ v.onCopy }}" style="display:flex; align-items:center; gap:6px; padding:5px 9px; border:1px dashed {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
                           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="{{ a }}" stroke-width="1.7"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                          <span class="mono" style="font-size:11px; font-weight:500; color: {{ a }}">{{ v.codeLabel }}</span>
+                          <span class="mono" style="font-size:calc(11px * var(--ts)); font-weight:500; color: {{ a }}">{{ v.codeLabel }}</span>
                         </button>
-                        <span class="mono" style="font-size:11px; color: {{ a }}">−S${{ v.offStr }}</span>
+                        <span class="mono" style="font-size:calc(11px * var(--ts)); color: {{ a }}">−S${{ v.offStr }}</span>
                       </div>
                     </sc-for>
-                    <button onClick="{{ r.onOpen }}" style-active="transform:scale(0.99)" style="width:100%; padding:9px; border:1px solid #23211A; border-radius:4px; background:none; color:#23211A; font-family:'Public Sans'; font-size:12px; font-weight:600; cursor:pointer;">Copy codes &amp; open {{ r.short }}</button>
+                    <button onClick="{{ r.onOpen }}" style-active="transform:scale(0.99)" style="width:100%; padding:9px; border:1px solid var(--ink); border-radius:4px; background:none; color:var(--ink); font-family:'Public Sans'; font-size:calc(12px * var(--ts)); font-weight:600; cursor:pointer;">Copy codes &amp; open {{ r.short }}</button>
                   </div>
                 </div>
               </sc-for>
@@ -419,122 +599,122 @@ window.__resources = {
 
             <!-- what owners say -->
             <sc-if value="{{ p.showInsights }}" hint-placeholder-val="{{ true }}">
-            <div style="margin-top:20px; background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; padding:15px;">
+            <div style="margin-top:20px; background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:15px;">
               <div style="display:flex; align-items:center; gap:8px;">
                 <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#23211A" stroke-width="1.6"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke-linejoin="round"></path></svg>
-                <span class="serif" style="font-size:16px; font-weight:600; color:#23211A;">What owners say</span>
-                <span class="mono" style="margin-left:auto; font-size:9.5px; color:#9A9684;">{{ p.reviews.count }} reviews</span>
+                <span class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--ink);">What owners say</span>
+                <span class="mono" style="margin-left:auto; font-size:calc(9.5px * var(--ts)); color:var(--ink-3);">{{ p.reviews.count }} reviews</span>
               </div>
-              <p class="serif" style="font-size:13px; color:#6A6656; line-height:1.5; margin-top:9px; font-style:italic;">“{{ p.reviews.verdict }}”</p>
+              <p class="serif" style="font-size:calc(13px * var(--ts)); color:var(--ink-2); line-height:1.5; margin-top:9px; font-style:italic;">“{{ p.reviews.verdict }}”</p>
               <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:13px;">
                 <div>
-                  <p class="mono" style="font-size:9px; color: {{ a }}; letter-spacing:0.05em; margin-bottom:7px;">LOVED</p>
-                  <sc-for list="{{ p.reviews.pros }}" as="pro" hint-placeholder-count="2"><div style="display:flex; gap:6px; margin-bottom:6px;"><span style="color:{{ a }}; font-size:11px;">+</span><span style="font-size:11px; color:#6A6656; line-height:1.4;">{{ pro }}</span></div></sc-for>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color: {{ a }}; letter-spacing:0.05em; margin-bottom:7px;">LOVED</p>
+                  <sc-for list="{{ p.reviews.pros }}" as="pro" hint-placeholder-count="2"><div style="display:flex; gap:6px; margin-bottom:6px;"><span style="color:{{ a }}; font-size:calc(11px * var(--ts));">+</span><span style="font-size:calc(11px * var(--ts)); color:var(--ink-2); line-height:1.4;">{{ pro }}</span></div></sc-for>
                 </div>
                 <div>
-                  <p class="mono" style="font-size:9px; color:#A6503F; letter-spacing:0.05em; margin-bottom:7px;">GRIPES</p>
-                  <sc-for list="{{ p.reviews.cons }}" as="con" hint-placeholder-count="2"><div style="display:flex; gap:6px; margin-bottom:6px;"><span style="color:#A6503F; font-size:11px;">−</span><span style="font-size:11px; color:#6A6656; line-height:1.4;">{{ con }}</span></div></sc-for>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--danger); letter-spacing:0.05em; margin-bottom:7px;">GRIPES</p>
+                  <sc-for list="{{ p.reviews.cons }}" as="con" hint-placeholder-count="2"><div style="display:flex; gap:6px; margin-bottom:6px;"><span style="color:var(--danger); font-size:calc(11px * var(--ts));">−</span><span style="font-size:calc(11px * var(--ts)); color:var(--ink-2); line-height:1.4;">{{ con }}</span></div></sc-for>
                 </div>
               </div>
             </div>
             </sc-if>
 
             <!-- built to keep -->
-            <div style="margin-top:12px; display:flex; gap:10px; align-items:center; padding:12px 14px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5;">
+            <div style="margin-top:12px; display:flex; gap:10px; align-items:center; padding:12px 14px; border:1px solid var(--line); border-radius:4px; background:var(--surface);">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="{{ a }}" stroke-width="1.6" style="flex-shrink:0;"><path d="M21 12a9 9 0 1 1-6.2-8.5" stroke-linecap="round"></path><path d="M21 3v6h-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-              <div><p style="font-size:12px; font-weight:600; color:#23211A;">Built to keep</p><p style="font-size:11px; color:#6A6656; line-height:1.4; margin-top:1px;">{{ p.longevity }}</p></div>
+              <div><p style="font-size:calc(12px * var(--ts)); font-weight:600; color:var(--ink);">Built to keep</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-2); line-height:1.4; margin-top:1px;">{{ p.longevity }}</p></div>
             </div>
 
             <sc-if value="{{ p.showInsights }}" hint-placeholder-val="{{ true }}">
-            <button onClick="{{ p.onSleep }}" style-active="transform:scale(0.99)" style="width:100%; height:44px; margin-top:11px; border:1px solid {{ a }}; border-radius:4px; background: {{ aMuted }}; color: {{ a }}; font-family:'Public Sans'; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
+            <button onClick="{{ p.onSleep }}" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:11px; border:1px solid {{ a }}; border-radius:4px; background: {{ aMuted }}; color: {{ a }}; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" stroke-linejoin="round"></path></svg>
               {{ p.sleepLabel }}
             </button>
-            <p style="font-size:10.5px; color:#9A9684; text-align:center; margin-top:8px; line-height:1.4;">A quiet 24-hour hold. We'll ask once if you still want it — no reminders, no nudges.</p>
+            <p style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:8px; line-height:1.4;">A quiet 24-hour hold. We'll ask once if you still want it — no reminders, no nudges.</p>
             </sc-if>
           </div>
 
           <!-- filter & sort drawer -->
           <sc-if value="{{ p.filterOpen }}" hint-placeholder-val="{{ false }}">
             <div onClick="{{ p.closeFilter }}" style="position:absolute; inset:0; z-index:60; display:flex; flex-direction:column; justify-content:flex-end; background:rgba(28,26,21,0.4); animation:fadeIn 0.15s ease;">
-              <div onClick="{{ p.stop }}" style="display:flex; flex-direction:column; max-height:82%; background:#F4F1E8; border-top:1px solid #CFC9B6; border-radius:8px 8px 0 0; box-shadow:0 -8px 30px rgba(35,33,26,0.2);">
-                <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px 14px; border-bottom:1px solid #DED9C9; flex-shrink:0;">
+              <div onClick="{{ p.stop }}" style="display:flex; flex-direction:column; max-height:82%; background:var(--bg); border-top:1px solid var(--line-2); border-radius:8px 8px 0 0; box-shadow:0 -8px 30px rgba(35,33,26,0.2);">
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px 14px; border-bottom:1px solid var(--line); flex-shrink:0;">
                   <button onClick="{{ p.closeFilter }}" style="border:none; background:none; cursor:pointer; padding:2px; display:flex;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#6A6656" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path></svg></button>
-                  <h3 class="serif" style="font-size:17px; font-weight:600; color:#23211A;">Filter &amp; sort</h3>
-                  <button onClick="{{ p.onReset }}" style="border:none; background:none; cursor:pointer; font-family:'Public Sans'; font-size:12.5px; font-weight:600; color: {{ a }}">Reset all</button>
+                  <h3 class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">Filter &amp; sort</h3>
+                  <button onClick="{{ p.onReset }}" style="border:none; background:none; cursor:pointer; font-family:'Public Sans'; font-size:calc(12.5px * var(--ts)); font-weight:600; color: {{ a }}">Reset all</button>
                 </div>
 
                 <div style="flex:1; overflow-y:auto; padding:16px 20px 8px;">
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin-bottom:10px;">PRICE RANGE</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin-bottom:10px;">PRICE RANGE</p>
                   <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="flex:1; display:flex; align-items:center; gap:6px; height:42px; padding:0 12px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5;">
-                      <span class="mono" style="font-size:12px; color:#9A9684;">S$</span>
-                      <input type="number" inputmode="numeric" placeholder="Min" value="{{ p.minPrice }}" onInput="{{ p.onMinPrice }}" style="flex:1; width:100%; border:none; background:none; outline:none; font-family:'Spline Sans Mono'; font-size:13px; color:#23211A;"/>
+                    <div style="flex:1; display:flex; align-items:center; gap:6px; height:42px; padding:0 12px; border:1px solid var(--line); border-radius:4px; background:var(--surface);">
+                      <span class="mono" style="font-size:calc(12px * var(--ts)); color:var(--ink-3);">S$</span>
+                      <input type="number" inputmode="numeric" placeholder="Min" value="{{ p.minPrice }}" onInput="{{ p.onMinPrice }}" style="flex:1; width:100%; border:none; background:none; outline:none; font-family:'Spline Sans Mono'; font-size:calc(13px * var(--ts)); color:var(--ink);"/>
                     </div>
-                    <span class="mono" style="font-size:13px; color:#9A9684;">–</span>
-                    <div style="flex:1; display:flex; align-items:center; gap:6px; height:42px; padding:0 12px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5;">
-                      <span class="mono" style="font-size:12px; color:#9A9684;">S$</span>
-                      <input type="number" inputmode="numeric" placeholder="Max" value="{{ p.maxPrice }}" onInput="{{ p.onMaxPrice }}" style="flex:1; width:100%; border:none; background:none; outline:none; font-family:'Spline Sans Mono'; font-size:13px; color:#23211A;"/>
+                    <span class="mono" style="font-size:calc(13px * var(--ts)); color:var(--ink-3);">–</span>
+                    <div style="flex:1; display:flex; align-items:center; gap:6px; height:42px; padding:0 12px; border:1px solid var(--line); border-radius:4px; background:var(--surface);">
+                      <span class="mono" style="font-size:calc(12px * var(--ts)); color:var(--ink-3);">S$</span>
+                      <input type="number" inputmode="numeric" placeholder="Max" value="{{ p.maxPrice }}" onInput="{{ p.onMaxPrice }}" style="flex:1; width:100%; border:none; background:none; outline:none; font-family:'Spline Sans Mono'; font-size:calc(13px * var(--ts)); color:var(--ink);"/>
                     </div>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:22px 0 10px;">SORT BY</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:22px 0 10px;">SORT BY</p>
                   <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     <sc-for list="{{ p.sortChips }}" as="s" hint-placeholder-count="3">
-                      <button onClick="{{ s.onPick }}" style="padding:8px 14px; border-radius:999px; cursor:pointer; font-family:'Public Sans'; font-size:12.5px; font-weight:600; border:1px solid {{ s.border }}; background: {{ s.bg }}; color: {{ s.color }}">{{ s.label }}</button>
+                      <button onClick="{{ s.onPick }}" style="padding:8px 14px; border-radius:999px; cursor:pointer; font-family:'Public Sans'; font-size:calc(12.5px * var(--ts)); font-weight:600; border:1px solid {{ s.border }}; background: {{ s.bg }}; color: {{ s.color }}">{{ s.label }}</button>
                     </sc-for>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:22px 0 10px;">MINIMUM RATING</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:22px 0 10px;">MINIMUM RATING</p>
                   <div style="display:flex; flex-wrap:wrap; gap:8px;">
                     <sc-for list="{{ p.ratingChips }}" as="s" hint-placeholder-count="3">
-                      <button onClick="{{ s.onPick }}" style="padding:8px 14px; border-radius:999px; cursor:pointer; font-family:'Public Sans'; font-size:12.5px; font-weight:600; border:1px solid {{ s.border }}; background: {{ s.bg }}; color: {{ s.color }}">{{ s.label }}</button>
+                      <button onClick="{{ s.onPick }}" style="padding:8px 14px; border-radius:999px; cursor:pointer; font-family:'Public Sans'; font-size:calc(12.5px * var(--ts)); font-weight:600; border:1px solid {{ s.border }}; background: {{ s.bg }}; color: {{ s.color }}">{{ s.label }}</button>
                     </sc-for>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:22px 0 10px;">DELIVERY</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:22px 0 10px;">DELIVERY</p>
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <sc-for list="{{ p.logisticsRows }}" as="r" hint-placeholder-count="2">
                       <label onClick="{{ r.onToggle }}" style="display:flex; align-items:center; gap:11px; padding:10px 2px; cursor:pointer;">
                         <span style="width:20px; height:20px; border-radius:4px; border:1.5px solid {{ r.boxBorder }}; background: {{ r.boxBg }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FBFAF5" stroke-width="2.6"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"></path></svg></sc-if></span>
-                        <span style="font-size:14px; color:#23211A;">{{ r.label }}</span>
+                        <span style="font-size:calc(14px * var(--ts)); color:var(--ink);">{{ r.label }}</span>
                       </label>
                     </sc-for>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:22px 0 10px;">SHIPPED FROM</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:22px 0 10px;">SHIPPED FROM</p>
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <sc-for list="{{ p.shippedRows }}" as="r" hint-placeholder-count="3">
                       <label onClick="{{ r.onToggle }}" style="display:flex; align-items:center; gap:11px; padding:10px 2px; cursor:pointer;">
                         <span style="width:20px; height:20px; border-radius:4px; border:1.5px solid {{ r.boxBorder }}; background: {{ r.boxBg }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FBFAF5" stroke-width="2.6"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"></path></svg></sc-if></span>
-                        <span style="font-size:14px; color:#23211A;">{{ r.label }}</span>
+                        <span style="font-size:calc(14px * var(--ts)); color:var(--ink);">{{ r.label }}</span>
                       </label>
                     </sc-for>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:20px 0 10px;">SHOP TYPE</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:20px 0 10px;">SHOP TYPE</p>
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <sc-for list="{{ p.shopRows }}" as="r" hint-placeholder-count="3">
                       <label onClick="{{ r.onToggle }}" style="display:flex; align-items:center; gap:11px; padding:10px 2px; cursor:pointer;">
                         <span style="width:20px; height:20px; border-radius:4px; border:1.5px solid {{ r.boxBorder }}; background: {{ r.boxBg }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FBFAF5" stroke-width="2.6"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"></path></svg></sc-if></span>
-                        <span style="font-size:14px; color:#23211A;">{{ r.label }}</span>
+                        <span style="font-size:calc(14px * var(--ts)); color:var(--ink);">{{ r.label }}</span>
                       </label>
                     </sc-for>
                   </div>
 
-                  <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:20px 0 10px;">SERVICE &amp; PROMOTION</p>
+                  <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:20px 0 10px;">SERVICE &amp; PROMOTION</p>
                   <div style="display:flex; flex-direction:column; gap:2px;">
                     <sc-for list="{{ p.promoRows }}" as="r" hint-placeholder-count="2">
                       <label onClick="{{ r.onToggle }}" style="display:flex; align-items:center; gap:11px; padding:10px 2px; cursor:pointer;">
                         <span style="width:20px; height:20px; border-radius:4px; border:1.5px solid {{ r.boxBorder }}; background: {{ r.boxBg }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><sc-if value="{{ r.checked }}" hint-placeholder-val="{{ false }}"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#FBFAF5" stroke-width="2.6"><path d="M20 6L9 17l-5-5" stroke-linecap="round" stroke-linejoin="round"></path></svg></sc-if></span>
-                        <span style="font-size:14px; color:#23211A;">{{ r.label }}</span>
+                        <span style="font-size:calc(14px * var(--ts)); color:var(--ink);">{{ r.label }}</span>
                       </label>
                     </sc-for>
                   </div>
                 </div>
 
-                <div style="padding:12px 20px 20px; border-top:1px solid #DED9C9; flex-shrink:0;">
-                  <button onClick="{{ p.closeFilter }}" style-active="transform:scale(0.99)" style="width:100%; height:46px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:14px; font-weight:700; cursor:pointer;">Apply · {{ p.retailerCount }} sellers</button>
+                <div style="padding:12px 20px 20px; border-top:1px solid var(--line); flex-shrink:0;">
+                  <button onClick="{{ p.closeFilter }}" style-active="transform:scale(0.99)" style="width:100%; min-height:46px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:700; cursor:pointer;">Apply · {{ p.retailerCount }} sellers</button>
                 </div>
               </div>
             </div>
@@ -544,74 +724,74 @@ window.__resources = {
 
       <!-- ============ WEBVIEW ============ -->
       <sc-if value="{{ isWebview }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="height:52px; flex-shrink:0; display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid #DED9C9;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="height:52px; flex-shrink:0; display:flex; align-items:center; gap:10px; padding:0 16px; border-bottom:1px solid var(--line);">
             <button onClick="{{ closeWebview }}" style="border:none; background:none; cursor:pointer; padding:2px; display:flex;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#23211A" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path></svg></button>
-            <span style="font-size:13px; font-weight:600; color:#23211A;">Findr browser</span>
-            <div style="margin-left:auto; display:flex; align-items:center; gap:5px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="{{ a }}" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><span class="mono" style="font-size:10px; color:#9A9684;">secure</span></div>
+            <span style="font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink);">Findr browser</span>
+            <div style="margin-left:auto; display:flex; align-items:center; gap:5px;"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="{{ a }}" stroke-width="1.8"><rect x="5" y="11" width="14" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg><span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">secure</span></div>
           </div>
           <div style="flex:1; overflow-y:auto; padding:18px 16px;">
-            <div style="border:1px solid #DED9C9; border-radius:4px; padding:16px; background:#FBFAF5;">
-              <p class="mono" style="font-size:10px; color:#9A9684; letter-spacing:0.03em;">FINDR FOUND YOUR LOWEST ON</p>
-              <div style="display:flex; align-items:center; gap:9px; margin-top:6px;"><span style="font-size:22px;">{{ webR.logo }}</span><span class="serif" style="font-size:20px; font-weight:600; color:#23211A;">{{ webR.name }}</span></div>
+            <div style="border:1px solid var(--line); border-radius:4px; padding:16px; background:var(--surface);">
+              <p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.03em;">FINDR FOUND YOUR LOWEST ON</p>
+              <div style="display:flex; align-items:center; gap:9px; margin-top:6px;"><span style="font-size:calc(22px * var(--ts));">{{ webR.logo }}</span><span class="serif" style="font-size:calc(20px * var(--ts)); font-weight:600; color:var(--ink);">{{ webR.name }}</span></div>
               <div style="display:flex; align-items:baseline; gap:10px; margin-top:14px;">
-                <span class="mono" style="font-size:30px; font-weight:500; color:#23211A;">S${{ webR.finalStr }}</span>
-                <span class="mono" style="font-size:13px; color:#9A9684; text-decoration:line-through;">S${{ webR.baseStr }}</span>
+                <span class="mono" style="font-size:calc(30px * var(--ts)); font-weight:500; color:var(--ink);">S${{ webR.finalStr }}</span>
+                <span class="mono" style="font-size:calc(13px * var(--ts)); color:var(--ink-3); text-decoration:line-through;">S${{ webR.baseStr }}</span>
               </div>
-              <span class="mono" style="display:inline-block; margin-top:9px; font-size:11px; font-weight:500; background: {{ aMuted }}; color: {{ a }}; padding:3px 10px; border-radius:999px;">you save S${{ webR.savedStr }}</span>
+              <span class="mono" style="display:inline-block; margin-top:9px; font-size:calc(11px * var(--ts)); font-weight:500; background: {{ aMuted }}; color: {{ a }}; padding:3px 10px; border-radius:999px;">you save S${{ webR.savedStr }}</span>
             </div>
-            <p class="mono" style="font-size:9.5px; color:#9A9684; letter-spacing:0.04em; margin:18px 4px 9px;">COPY AT CHECKOUT</p>
-            <div style="border:1px solid #DED9C9; border-radius:4px; padding:4px 14px; background:#FBFAF5;">
+            <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); letter-spacing:0.04em; margin:18px 4px 9px;">COPY AT CHECKOUT</p>
+            <div style="border:1px solid var(--line); border-radius:4px; padding:4px 14px; background:var(--surface);">
               <sc-for list="{{ webR.vouchers }}" as="v" hint-placeholder-count="2">
-                <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid #EAE7DC;">
-                  <span class="mono" style="font-size:13px; font-weight:500; color:#23211A; letter-spacing:0.05em;">{{ v.code }}</span>
-                  <span class="mono" style="font-size:11px; font-weight:500; color: {{ a }}">−S${{ v.offStr }}</span>
+                <div style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--surface-2);">
+                  <span class="mono" style="font-size:calc(13px * var(--ts)); font-weight:500; color:var(--ink); letter-spacing:0.05em;">{{ v.code }}</span>
+                  <span class="mono" style="font-size:calc(11px * var(--ts)); font-weight:500; color: {{ a }}">−S${{ v.offStr }}</span>
                 </div>
               </sc-for>
-              <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 0;"><span style="font-size:12px; font-weight:600; color:#23211A;">Total saved</span><span class="mono" style="font-size:13px; font-weight:500; color: {{ a }}">−S${{ webR.savedStr }}</span></div>
+              <div style="display:flex; align-items:center; justify-content:space-between; padding:11px 0;"><span style="font-size:calc(12px * var(--ts)); font-weight:600; color:var(--ink);">Total saved</span><span class="mono" style="font-size:calc(13px * var(--ts)); font-weight:500; color: {{ a }}">−S${{ webR.savedStr }}</span></div>
             </div>
-            <button onClick="{{ webR.onCopyAll }}" style-active="transform:scale(0.99)" style="width:100%; height:42px; margin-top:13px; border:1px solid #23211A; border-radius:4px; background:none; color:#23211A; font-family:'Public Sans'; font-size:13px; font-weight:600; cursor:pointer;">{{ webR.copyLabel }}</button>
-            <button style-active="transform:scale(0.99)" style="width:100%; height:46px; margin-top:10px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:14px; font-weight:600; cursor:pointer;">Open {{ webR.name }}</button>
-            <p style="font-size:10.5px; color:#9A9684; text-align:center; margin-top:13px; line-height:1.5;">Findr takes no commission and shows no ads. Same code, same total, whether you use us or not.</p>
+            <button onClick="{{ webR.onCopyAll }}" style-active="transform:scale(0.99)" style="width:100%; min-height:42px; margin-top:13px; border:1px solid var(--ink); border-radius:4px; background:none; color:var(--ink); font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:600; cursor:pointer;">{{ webR.copyLabel }}</button>
+            <button style-active="transform:scale(0.99)" style="width:100%; min-height:46px; margin-top:10px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer;">Open {{ webR.name }}</button>
+            <p style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:13px; line-height:1.5;">Findr takes no commission and shows no ads. Same code, same total, whether you use us or not.</p>
           </div>
         </div>
       </sc-if>
 
       <!-- ============ WATCHLIST ============ -->
       <sc-if value="{{ isWatch }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="padding:20px 20px 12px; border-bottom:1px solid #DED9C9; flex-shrink:0;">
-            <h1 class="serif" style="font-size:23px; font-weight:600; color:#23211A;">Watchlist</h1>
-            <p style="font-size:12.5px; color:#6A6656; margin-top:2px;">We ping you only when a price becomes genuinely fair — and only if it's in stock.</p>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="padding:20px 20px 12px; border-bottom:1px solid var(--line); flex-shrink:0;">
+            <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Watchlist</h1>
+            <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); margin-top:2px;">We ping you only when a price becomes genuinely fair — and only if it's in stock.</p>
           </div>
           <div style="flex:1; overflow-y:auto; padding:16px 20px 22px;">
             <sc-for list="{{ lists }}" as="L" hint-placeholder-count="3">
               <div style="margin-bottom:22px;">
                 <div style="display:flex; align-items:center; gap:8px; margin-bottom:9px;">
                   <span style="width:8px; height:8px; border-radius:2px; background: {{ L.color }}"></span>
-                  <h2 class="serif" style="font-size:16px; font-weight:600; color:#23211A;">{{ L.name }}</h2>
-                  <span class="mono" style="font-size:10px; color:#9A9684;">{{ L.countLabel }}</span>
+                  <h2 class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--ink);">{{ L.name }}</h2>
+                  <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ L.countLabel }}</span>
                 </div>
-                <div style="border-top:1px solid #DED9C9;">
+                <div style="border-top:1px solid var(--line);">
                   <sc-for list="{{ L.items }}" as="it" hint-placeholder-count="1">
-                    <div onClick="{{ it.onOpen }}" style-active="background:#EAE7DC" style="display:flex; gap:12px; padding:11px 4px; border-bottom:1px solid #DED9C9; cursor:pointer;">
-                      <div style="width:52px; height:52px; border-radius:4px; border:1px solid #DED9C9; background:#EAE7DC; flex-shrink:0; overflow:hidden;">{{ it.imgEl }}</div>
+                    <div onClick="{{ it.onOpen }}" style-active="background:#EAE7DC" style="display:flex; gap:12px; padding:11px 4px; border-bottom:1px solid var(--line); cursor:pointer;">
+                      <div style="width:52px; height:52px; border-radius:4px; border:1px solid var(--line); background:var(--surface-2); flex-shrink:0; overflow:hidden;">{{ it.imgEl }}</div>
                       <div style="flex:1; min-width:0;">
-                        <p style="font-size:13px; font-weight:600; color:#23211A; line-height:1.2;">{{ it.name }}</p>
+                        <p style="font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2;">{{ it.name }}</p>
                         <div style="display:flex; align-items:center; gap:7px; margin-top:4px;">
                           <span style="width:5px; height:5px; border-radius:50%; background: {{ it.stockColor }}"></span>
-                          <span class="mono" style="font-size:10px; color:#6A6656;">{{ it.stock }}</span>
+                          <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-2);">{{ it.stock }}</span>
                         </div>
                         <sc-if value="{{ it.sleep }}" hint-placeholder-val="{{ false }}">
                           <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
-                            <button onClick="{{ it.onDecide }}" style="border:none; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:4px; cursor:pointer;">Still want it</button>
-                            <button onClick="{{ it.onLetGo }}" style="border:1px solid #DED9C9; background:none; color:#6A6656; font-family:'Public Sans'; font-size:10.5px; font-weight:600; padding:4px 10px; border-radius:4px; cursor:pointer;">Let it go</button>
+                            <button onClick="{{ it.onDecide }}" style="border:none; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(10.5px * var(--ts)); font-weight:600; padding:11px 14px; min-height:44px; border-radius:4px; cursor:pointer;">Still want it</button>
+                            <button onClick="{{ it.onLetGo }}" style="border:1px solid var(--line); background:none; color:var(--ink-2); font-family:'Public Sans'; font-size:calc(10.5px * var(--ts)); font-weight:600; padding:11px 14px; min-height:44px; border-radius:4px; cursor:pointer;">Let it go</button>
                           </div>
                         </sc-if>
                       </div>
                       <div style="text-align:right; flex-shrink:0;">
-                        <p class="mono" style="font-size:13px; font-weight:500; color:#23211A;">S${{ it.price }}</p>
-                        <p class="mono" style="font-size:10px; margin-top:3px; color: {{ it.tagColor }}">{{ it.tag }}</p>
+                        <p class="mono" style="font-size:calc(13px * var(--ts)); font-weight:500; color:var(--ink);">S${{ it.price }}</p>
+                        <p class="mono" style="font-size:calc(10px * var(--ts)); margin-top:3px; color: {{ it.tagColor }}">{{ it.tag }}</p>
                       </div>
                     </div>
                   </sc-for>
@@ -624,29 +804,29 @@ window.__resources = {
 
       <!-- ============ TRENDING ============ -->
       <sc-if value="{{ isTrending }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="padding:20px 20px 14px; border-bottom:1px solid #DED9C9; flex-shrink:0;">
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="padding:20px 20px 14px; border-bottom:1px solid var(--line); flex-shrink:0;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <h1 class="serif" style="font-size:23px; font-weight:600; color:#23211A;">Trending deals</h1>
-              <span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:rgba(166,80,63,0.12);"><span style="width:6px; height:6px; border-radius:50%; background:#A6503F; animation:pulseDot 1.6s ease-in-out infinite;"></span><span class="mono" style="font-size:9px; font-weight:500; color:#A6503F; letter-spacing:0.04em;">LIVE</span></span>
+              <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Trending deals</h1>
+              <span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:rgba(166,80,63,0.12);"><span style="width:6px; height:6px; border-radius:50%; background:var(--danger); animation:pulseDot 1.6s ease-in-out infinite;"></span><span class="mono" style="font-size:calc(9px * var(--ts)); font-weight:500; color:var(--danger); letter-spacing:0.04em;">LIVE</span></span>
             </div>
-            <p style="font-size:12.5px; color:#6A6656; line-height:1.5; margin-top:4px;">Singapore market signals show heavy retailer liquidation in <b style="color:#23211A;">beauty</b> and <b style="color:#23211A;">apparel</b> this week.</p>
+            <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); line-height:1.5; margin-top:4px;">Singapore market signals show heavy retailer liquidation in <b style="color:var(--ink);">beauty</b> and <b style="color:var(--ink);">apparel</b> this week.</p>
           </div>
           <div style="flex:1; overflow-y:auto; padding:16px 20px 22px;">
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
               <sc-for list="{{ trending }}" as="t" hint-placeholder-count="6">
-                <div onClick="{{ t.onOpen }}" style-active="transform:scale(0.97)" style="background:#FBFAF5; border:1px solid #DED9C9; border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column;">
-                  <div style="position:relative; height:118px; background:#EAE7DC; overflow:hidden;">{{ t.imgEl }}
-                    <span class="mono" style="position:absolute; top:8px; left:8px; font-size:8.5px; font-weight:500; letter-spacing:0.05em; color:#FBFAF5; background: {{ t.flagBg }}; padding:3px 7px; border-radius:3px;">{{ t.flag }}</span>
+                <div onClick="{{ t.onOpen }}" style-active="transform:scale(0.97)" style="background:var(--surface); border:1px solid var(--line); border-radius:6px; overflow:hidden; cursor:pointer; display:flex; flex-direction:column;">
+                  <div style="position:relative; height:118px; background:var(--surface-2); overflow:hidden;">{{ t.imgEl }}
+                    <span class="mono" style="position:absolute; top:8px; left:8px; font-size:calc(8.5px * var(--ts)); font-weight:500; letter-spacing:0.05em; color:var(--surface); background: {{ t.flagBg }}; padding:3px 7px; border-radius:3px;">{{ t.flag }}</span>
                   </div>
                   <div style="padding:11px 11px 12px; display:flex; flex-direction:column; flex:1;">
-                    <span class="mono" style="font-size:8.5px; color: {{ t.tierColor }}; letter-spacing:0.04em;">{{ t.tierLabel }}</span>
-                    <p style="font-size:12px; font-weight:600; color:#23211A; line-height:1.25; margin-top:3px; min-height:30px;">{{ t.name }}</p>
+                    <span class="mono" style="font-size:calc(8.5px * var(--ts)); color: {{ t.tierColor }}; letter-spacing:0.04em;">{{ t.tierLabel }}</span>
+                    <p style="font-size:calc(12px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.25; margin-top:3px; min-height:30px;">{{ t.name }}</p>
                     <div style="margin-top:auto; padding-top:9px;">
-                      <p class="mono" style="font-size:8.5px; color:#9A9684; letter-spacing:0.04em;">LOWEST FOUND</p>
+                      <p class="mono" style="font-size:calc(8.5px * var(--ts)); color:var(--ink-3); letter-spacing:0.04em;">LOWEST FOUND</p>
                       <div style="display:flex; align-items:baseline; gap:6px; margin-top:1px;">
-                        <span class="mono" style="font-size:16px; font-weight:500; color:#23211A;">S${{ t.price }}</span>
-                        <span class="mono" style="font-size:10px; font-weight:500; color: {{ t.dropColor }}">−{{ t.dropPct }}%</span>
+                        <span class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color:var(--ink);">S${{ t.price }}</span>
+                        <span class="mono" style="font-size:calc(10px * var(--ts)); font-weight:500; color: {{ t.dropColor }}">−{{ t.dropPct }}%</span>
                       </div>
                     </div>
                   </div>
@@ -659,34 +839,34 @@ window.__resources = {
 
       <!-- ============ PREDICT ============ -->
       <sc-if value="{{ isPredict }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="padding:20px 20px 12px; border-bottom:1px solid #DED9C9; flex-shrink:0;">
-            <h1 class="serif" style="font-size:23px; font-weight:600; color:#23211A;">Market forecasts</h1>
-            <p style="font-size:12.5px; color:#6A6656; margin-top:2px;">30-day price movement across SE Asia.</p>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="padding:20px 20px 12px; border-bottom:1px solid var(--line); flex-shrink:0;">
+            <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Market forecasts</h1>
+            <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); margin-top:2px;">30-day price movement across SE Asia.</p>
             <div style="display:flex; gap:16px; margin-top:12px;">
-              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:16px; font-weight:500; color: {{ a }}">{{ dropCount }}</span><span class="mono" style="font-size:10px; color:#9A9684;">drops</span></div>
-              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:16px; font-weight:500; color:#A6503F;">{{ hikeCount }}</span><span class="mono" style="font-size:10px; color:#9A9684;">hikes</span></div>
-              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:16px; font-weight:500; color:#B07A45;">{{ stableCount }}</span><span class="mono" style="font-size:10px; color:#9A9684;">stable</span></div>
+              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color: {{ a }}">{{ dropCount }}</span><span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">drops</span></div>
+              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color:var(--danger);">{{ hikeCount }}</span><span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">hikes</span></div>
+              <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color:var(--warn);">{{ stableCount }}</span><span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">stable</span></div>
             </div>
           </div>
           <div style="flex:1; position:relative; overflow:hidden;">
           <div style="height:100%; overflow-y:auto; padding:12px 20px 22px; transition:filter 0.3s; filter: {{ predictBlur }}">
             <div style="display:flex; flex-direction:column; gap:9px;">
               <sc-for list="{{ categories }}" as="c" hint-placeholder-count="6">
-                <div style="border:1px solid {{ c.cardBorder }}; border-radius:4px; background:#FBFAF5; overflow:hidden;">
+                <div style="border:1px solid {{ c.cardBorder }}; border-radius:4px; background:var(--surface); overflow:hidden;">
                   <div onClick="{{ c.onToggle }}" style-active="background:#F4F1E8" style="display:flex; align-items:center; gap:11px; padding:13px 14px; cursor:pointer;">
-                    <span style="font-size:20px; background:#F4F1E8; border:1px solid #DED9C9; border-radius:4px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ c.emoji }}</span>
-                    <p style="flex:1; min-width:0; font-size:13.5px; font-weight:600; color:#23211A; line-height:1.2;">{{ c.name }}</p>
-                    <span class="mono" style="font-size:11.5px; font-weight:500; letter-spacing:0.02em; padding:5px 10px; border-radius:999px; background: {{ c.badgeBg }}; color: {{ c.labelColor }}; flex-shrink:0;">{{ c.arrow }}{{ c.forecast }}</span>
+                    <span style="font-size:calc(20px * var(--ts)); background:var(--bg); border:1px solid var(--line); border-radius:4px; width:38px; min-height:38px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">{{ c.emoji }}</span>
+                    <p style="flex:1; min-width:0; font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2;">{{ c.name }}</p>
+                    <span class="mono" style="font-size:calc(11.5px * var(--ts)); font-weight:500; letter-spacing:0.02em; padding:5px 10px; border-radius:999px; background: {{ c.badgeBg }}; color: {{ c.labelColor }}; flex-shrink:0;">{{ c.arrow }}{{ c.forecast }}</span>
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#9A9684" stroke-width="1.8" style="flex-shrink:0; transition:transform 0.2s; transform: {{ c.chevron }}"><path d="M6 9l6 6 6-6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
                   </div>
                   <sc-if value="{{ c.open }}" hint-placeholder-val="{{ false }}">
-                    <div style="padding:0 14px 15px; border-top:1px solid #EAE7DC; background:#F4F1E8; animation:accOpen 0.28s ease;">
+                    <div style="padding:0 14px 15px; border-top:1px solid var(--surface-2); background:var(--bg); animation:accOpen 0.28s ease;">
                       <div style="display:flex; align-items:center; justify-content:space-between; padding-top:13px; margin-bottom:9px;">
-                        <span class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.05em;">30-DAY INDEX PROJECTION</span>
-                        <span class="mono" style="font-size:9px; color: {{ c.labelColor }}">{{ c.projLabel }}</span>
+                        <span class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.05em;">30-DAY INDEX PROJECTION</span>
+                        <span class="mono" style="font-size:calc(9px * var(--ts)); color: {{ c.labelColor }}">{{ c.projLabel }}</span>
                       </div>
-                      <div style="background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; padding:12px 12px 8px;">
+                      <div style="background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:12px 12px 8px;">
                         <svg viewBox="0 0 300 96" style="width:100%; height:88px;" preserveAspectRatio="none">
                           <line x1="0" y1="24" x2="300" y2="24" stroke="#EAE7DC" stroke-width="1"></line>
                           <line x1="0" y1="60" x2="300" y2="60" stroke="#EAE7DC" stroke-width="1"></line>
@@ -694,13 +874,13 @@ window.__resources = {
                           <sc-for list="{{ c.chartDots }}" as="pt" hint-placeholder-count="4"><circle cx="{{ pt.x }}" cy="{{ pt.y }}" r="4" fill="#FBFAF5" stroke="{{ c.trendColor }}" stroke-width="2.5"></circle></sc-for>
                         </svg>
                         <div style="display:flex; justify-content:space-between; margin-top:4px;">
-                          <sc-for list="{{ c.weeks }}" as="wk" hint-placeholder-count="4"><span class="mono" style="font-size:8.5px; color:#9A9684;">{{ wk }}</span></sc-for>
+                          <sc-for list="{{ c.weeks }}" as="wk" hint-placeholder-count="4"><span class="mono" style="font-size:calc(8.5px * var(--ts)); color:var(--ink-3);">{{ wk }}</span></sc-for>
                         </div>
                       </div>
-                      <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.05em; margin:14px 0 8px;">MARKET DRIVERS</p>
-                      <sc-for list="{{ c.drivers }}" as="d" hint-placeholder-count="2"><div style="display:flex; gap:7px; margin-bottom:6px;"><span style="color: {{ c.trendColor }}; font-size:12px; line-height:1.3;">•</span><p style="font-size:11.5px; color:#6A6656; line-height:1.45;">{{ d }}</p></div></sc-for>
-                      <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.05em; margin:12px 0 8px;">VERIFIED SOURCES</p>
-                      <sc-for list="{{ c.news }}" as="n" hint-placeholder-count="1"><div style="background:#FBFAF5; border:1px solid #DED9C9; border-radius:4px; padding:9px 11px; margin-bottom:6px;"><p class="serif" style="font-size:11.5px; color:#23211A; font-style:italic; line-height:1.35;">“{{ n.headline }}”</p><p class="mono" style="font-size:9px; color:#9A9684; margin-top:3px;">— {{ n.source }}</p></div></sc-for>
+                      <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.05em; margin:14px 0 8px;">MARKET DRIVERS</p>
+                      <sc-for list="{{ c.drivers }}" as="d" hint-placeholder-count="2"><div style="display:flex; gap:7px; margin-bottom:6px;"><span style="color: {{ c.trendColor }}; font-size:calc(12px * var(--ts)); line-height:1.3;">•</span><p style="font-size:calc(11.5px * var(--ts)); color:var(--ink-2); line-height:1.45;">{{ d }}</p></div></sc-for>
+                      <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.05em; margin:12px 0 8px;">VERIFIED SOURCES</p>
+                      <sc-for list="{{ c.news }}" as="n" hint-placeholder-count="1"><div style="background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:9px 11px; margin-bottom:6px;"><p class="serif" style="font-size:calc(11.5px * var(--ts)); color:var(--ink); font-style:italic; line-height:1.35;">“{{ n.headline }}”</p><p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); margin-top:3px;">— {{ n.source }}</p></div></sc-for>
                     </div>
                   </sc-if>
                 </div>
@@ -709,14 +889,14 @@ window.__resources = {
           </div>
           <sc-if value="{{ predictLocked }}" hint-placeholder-val="{{ false }}">
             <div style="position:absolute; inset:0; z-index:20; display:flex; align-items:center; justify-content:center; padding:0 26px; background:rgba(244,241,232,0.55); backdrop-filter:blur(3px);">
-              <div style="width:100%; background:#FBFAF5; border:1px solid #DED9C9; border-radius:6px; padding:26px 22px; text-align:center; box-shadow:0 20px 50px rgba(35,33,26,0.22); animation:accOpen 0.3s ease;">
-                <div style="width:52px; height:52px; margin:0 auto; border-radius:6px; background:#23211A; display:flex; align-items:center; justify-content:center;">
+              <div style="width:100%; background:var(--surface); border:1px solid var(--line); border-radius:6px; padding:26px 22px; text-align:center; box-shadow:0 20px 50px rgba(35,33,26,0.22); animation:accOpen 0.3s ease;">
+                <div style="width:52px; height:52px; margin:0 auto; border-radius:6px; background:var(--ink); display:flex; align-items:center; justify-content:center;">
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#F4F1E8" stroke-width="1.7"><rect x="5" y="11" width="14" height="9" rx="1.5"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
                 </div>
-                <h2 class="serif" style="font-size:19px; font-weight:600; color:#23211A; margin-top:15px;">Unlock market forecasts</h2>
-                <p style="font-size:12.5px; color:#6A6656; line-height:1.55; margin-top:8px;">See price hikes, global tariffs and upcoming e-commerce drops up to 30 days before they happen.</p>
-                <button onClick="{{ unlockPredict }}" style-active="transform:scale(0.98)" style="width:100%; height:48px; margin-top:18px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:14px; font-weight:700; cursor:pointer;">Unlock with Findr Pro · S$3.99/mo</button>
-                <p class="mono" style="font-size:9.5px; color:#9A9684; margin-top:11px;">7-day free trial · cancel anytime</p>
+                <h2 class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink); margin-top:15px;">Unlock market forecasts</h2>
+                <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); line-height:1.55; margin-top:8px;">See price hikes, global tariffs and upcoming e-commerce drops up to 30 days before they happen.</p>
+                <button onClick="{{ unlockPredict }}" style-active="transform:scale(0.98)" style="width:100%; min-height:48px; margin-top:18px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:700; cursor:pointer;">Unlock with Findr Pro · S$3.99/mo</button>
+                <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); margin-top:11px;">7-day free trial · cancel anytime</p>
               </div>
             </div>
           </sc-if>
@@ -726,95 +906,249 @@ window.__resources = {
 
       <!-- ============ SETTINGS ============ -->
       <sc-if value="{{ isSettings }}" hint-placeholder-val="{{ true }}">
-        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:#F4F1E8;">
-          <div style="padding:20px 20px 12px; border-bottom:1px solid #DED9C9; flex-shrink:0;">
-            <h1 class="serif" style="font-size:23px; font-weight:600; color:#23211A;">Settings</h1>
+        <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
+          <div style="padding:20px 20px 12px; border-bottom:1px solid var(--line); flex-shrink:0;">
+            <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Settings</h1>
           </div>
           <div style="flex:1; overflow-y:auto; padding:18px 20px 22px;">
-            <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin-bottom:10px;">ACCOUNT</p>
-            <div style="display:flex; align-items:center; gap:12px; padding:14px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5;">
-              <div style="width:44px; height:44px; border-radius:50%; background: {{ aMuted }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="serif" style="font-size:19px; font-weight:600; color: {{ a }}">A</span></div>
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin-bottom:10px;">ACCOUNT</p>
+            <div style="display:flex; align-items:center; gap:12px; padding:14px; border:1px solid var(--line); border-radius:4px; background:var(--surface);">
+              <div style="width:44px; height:44px; border-radius:50%; background: {{ aMuted }}; display:flex; align-items:center; justify-content:center; flex-shrink:0;"><span class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color: {{ a }}">A</span></div>
               <div style="flex:1; min-width:0;">
-                <p style="font-size:14px; font-weight:600; color:#23211A;">hello@findr.ai</p>
+                <p style="font-size:calc(14px * var(--ts)); font-weight:600; color:var(--ink);">hello@findr.ai</p>
                 <div style="display:flex; align-items:center; gap:6px; margin-top:3px;">
-                  <span class="mono" style="font-size:9.5px; font-weight:500; padding:2px 8px; border-radius:999px; background: {{ tierBadgeBg }}; color: {{ tierBadgeColor }}">{{ tierBadge }}</span>
-                  <span class="mono" style="font-size:10px; color:#9A9684;">{{ tierSub }}</span>
+                  <span class="mono" style="font-size:calc(9.5px * var(--ts)); font-weight:500; padding:2px 8px; border-radius:999px; background: {{ tierBadgeBg }}; color: {{ tierBadgeColor }}">{{ tierBadge }}</span>
+                  <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ tierSub }}</span>
                 </div>
               </div>
             </div>
             <sc-if value="{{ showUpgradeRow }}" hint-placeholder-val="{{ false }}">
-              <button onClick="{{ upgradePro }}" style-active="transform:scale(0.99)" style="width:100%; height:44px; margin-top:10px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:13px; font-weight:700; cursor:pointer;">Upgrade to Findr Pro · S$3.99/mo</button>
+              <button onClick="{{ upgradePro }}" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:10px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:700; cursor:pointer;">Upgrade to Findr Pro · S$3.99/mo</button>
             </sc-if>
 
-            <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:26px 0 10px;">APPEARANCE</p>
-            <div style="display:flex; flex-direction:column; gap:2px;">
-              <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #DED9C9;">
-                <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Theme</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">Follows your system by default</p></div>
-                <span class="mono" style="font-size:11px; color:#6A6656; background:#EAE7DC; padding:5px 11px; border-radius:999px;">System</span>
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">ACCESSIBILITY</p>
+            <div onClick="{{ openA11y }}" style-active="background:var(--surface-2)" style="display:flex; align-items:center; gap:13px; padding:16px 14px; border:1px solid {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="{{ a }}" stroke-width="1.7" style="flex-shrink:0;"><circle cx="12" cy="12" r="9.5"></circle><circle cx="12" cy="7.4" r="1.15" fill="{{ a }}" stroke="none"></circle><path d="M7.6 10.4h8.8M12 10.6V16M12 13.2l-2.6 3.6M12 13.2l2.6 3.6" stroke-linecap="round"></path></svg>
+              <div style="flex:1; min-width:0;">
+                <p style="font-size:calc(15px * var(--ts)); font-weight:700; color:var(--ink);">Vision &amp; readability</p>
+                <p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); margin-top:2px; line-height:1.45;">Bigger text, stronger contrast, colour choices</p>
               </div>
-              <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #DED9C9;">
-                <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Reduce motion</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">Turns off animations app-wide</p></div>
-                <div onClick="{{ tg.reduceMotion }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.motionTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:#FBFAF5; transition:left 0.15s; left: {{ set.motionKnob }}"></div></div>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="{{ a }}" stroke-width="2" style="flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </div>
+
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">APPEARANCE</p>
+            <div style="display:flex; flex-direction:column; gap:2px;">
+              <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Theme</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">Follows your system by default</p></div>
+                <span class="mono" style="font-size:calc(11px * var(--ts)); color:var(--ink-2); background:var(--surface-2); padding:5px 11px; border-radius:999px;">System</span>
+              </div>
+              <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);">
+                <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Reduce motion</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">Turns off animations app-wide</p></div>
+                <div onClick="{{ tg.reduceMotion }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.motionTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:var(--surface); transition:left 0.15s; left: {{ set.motionKnob }}"></div></div>
               </div>
               <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
-                <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Density</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">Spacing throughout the app</p></div>
-                <div style="display:flex; background:#EAE7DC; border-radius:999px; padding:2px;">
-                  <span onClick="{{ tg.setCompact }}" class="mono" style="font-size:10.5px; font-weight:500; padding:5px 11px; border-radius:999px; cursor:pointer; background: {{ set.compactBg }}; color: {{ set.compactColor }}">Compact</span>
-                  <span onClick="{{ tg.setComfy }}" class="mono" style="font-size:10.5px; font-weight:500; padding:5px 11px; border-radius:999px; cursor:pointer; background: {{ set.comfyBg }}; color: {{ set.comfyColor }}">Comfortable</span>
+                <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Density</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">Spacing throughout the app</p></div>
+                <div style="display:flex; background:var(--surface-2); border-radius:999px; padding:2px;">
+                  <span onClick="{{ tg.setCompact }}" class="mono" style="font-size:calc(10.5px * var(--ts)); font-weight:500; padding:5px 11px; border-radius:999px; cursor:pointer; background: {{ set.compactBg }}; color: {{ set.compactColor }}">Compact</span>
+                  <span onClick="{{ tg.setComfy }}" class="mono" style="font-size:calc(10.5px * var(--ts)); font-weight:500; padding:5px 11px; border-radius:999px; cursor:pointer; background: {{ set.comfyBg }}; color: {{ set.comfyColor }}">Comfortable</span>
                 </div>
               </div>
             </div>
 
-            <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:26px 0 10px;">NOTIFICATIONS</p>
-            <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid #DED9C9;">
-              <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Fair-price alerts</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">Only when a watched price is genuinely fair</p></div>
-              <div onClick="{{ tg.fairPrice }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.fairTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:#FBFAF5; transition:left 0.15s; left: {{ set.fairKnob }}"></div></div>
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">NOTIFICATIONS</p>
+            <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--line);">
+              <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Fair-price alerts</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">Only when a watched price is genuinely fair</p></div>
+              <div onClick="{{ tg.fairPrice }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.fairTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:var(--surface); transition:left 0.15s; left: {{ set.fairKnob }}"></div></div>
             </div>
             <div data-dense style="display:flex; align-items:center; justify-content:space-between; padding:12px 0;">
-              <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Back-in-stock only</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">Never alert on a sold-out listing</p></div>
-              <div onClick="{{ tg.inStock }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.stockTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:#FBFAF5; transition:left 0.15s; left: {{ set.stockKnob }}"></div></div>
+              <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Back-in-stock only</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">Never alert on a sold-out listing</p></div>
+              <div onClick="{{ tg.inStock }}" style="width:38px; height:22px; border-radius:999px; cursor:pointer; position:relative; transition:background 0.15s; background: {{ set.stockTrack }}"><div style="position:absolute; top:2px; width:18px; height:18px; border-radius:50%; background:var(--surface); transition:left 0.15s; left: {{ set.stockKnob }}"></div></div>
             </div>
 
-            <p class="mono" style="font-size:9px; color:#9A9684; letter-spacing:0.06em; margin:26px 0 10px;">LEGAL &amp; TRANSPARENCY</p>
-            <div onClick="{{ openPrivacy }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; justify-content:space-between; padding:14px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5; cursor:pointer;">
-              <div><p style="font-size:13.5px; font-weight:600; color:#23211A;">Privacy Policy</p><p style="font-size:11px; color:#9A9684; margin-top:1px;">How we handle your scanning &amp; session data</p></div>
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">LEGAL &amp; TRANSPARENCY</p>
+            <div onClick="{{ openPrivacy }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; justify-content:space-between; padding:14px; border:1px solid var(--line); border-radius:4px; background:var(--surface); cursor:pointer;">
+              <div><p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink);">Privacy Policy</p><p style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:1px;">How we handle your scanning &amp; session data</p></div>
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#9A9684" stroke-width="1.8"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
             </div>
 
-            <div style="margin-top:24px; padding:16px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5;">
-              <div style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="{{ a }}" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"></path></svg><span class="serif" style="font-size:15px; font-weight:600; color:#23211A;">Why Findr saves you money</span></div>
+            <div style="margin-top:24px; padding:16px; border:1px solid var(--line); border-radius:4px; background:var(--surface);">
+              <div style="display:flex; align-items:center; gap:8px;"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="{{ a }}" stroke-width="1.6"><path d="M12 3l7 3v5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" stroke-linejoin="round"></path></svg><span class="serif" style="font-size:calc(15px * var(--ts)); font-weight:600; color:var(--ink);">Why Findr saves you money</span></div>
               <div style="margin-top:11px; display:flex; flex-direction:column; gap:9px;">
-                <div style="display:flex; gap:8px;"><span style="color:{{ a }};">·</span><p style="font-size:12px; color:#6A6656; line-height:1.5;">We compare every store at once and stack every voucher — so you always land the true lowest price.</p></div>
-                <div style="display:flex; gap:8px;"><span style="color:{{ a }};">·</span><p style="font-size:12px; color:#6A6656; line-height:1.5;">We check 90 days of price history, so a “sale” has to be a real one.</p></div>
+                <div style="display:flex; gap:8px;"><span style="color:{{ a }};">·</span><p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); line-height:1.5;">We compare every store at once and stack every voucher — so you always land the true lowest price.</p></div>
+                <div style="display:flex; gap:8px;"><span style="color:{{ a }};">·</span><p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); line-height:1.5;">We check 90 days of price history, so a “sale” has to be a real one.</p></div>
               </div>
             </div>
 
-            <button onClick="{{ logout }}" style="width:100%; height:46px; margin-top:16px; border:1px solid #DED9C9; border-radius:4px; background:none; color:#A6503F; font-family:'Public Sans'; font-size:13.5px; font-weight:600; cursor:pointer;">Log out</button>
-            <p class="mono" style="font-size:9.5px; color:#9A9684; text-align:center; margin-top:16px;">Findr · built on PaperDesign · v0.3</p>
+            <button onClick="{{ logout }}" style="width:100%; min-height:46px; margin-top:16px; border:1px solid var(--line); border-radius:4px; background:none; color:var(--danger); font-family:'Public Sans'; font-size:calc(13.5px * var(--ts)); font-weight:600; cursor:pointer;">Log out</button>
+            <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:16px;">Findr · built on PaperDesign · v0.3</p>
           </div>
         </div>
       </sc-if>
 
     </div>
 
+    <!-- ============ ACCESSIBILITY ============
+         Deliberately oversized throughout: 17-21px labels against the app's
+         11-13.5px, 60px toggles against 38px, and every control past the
+         44px minimum touch target. Someone who needs this screen should not
+         have to already be able to read small text to find their way in. -->
+    <sc-if value="{{ showA11y }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute; inset:0; z-index:95; background:var(--bg); display:flex; flex-direction:column; animation:accOpen 0.25s ease;">
+
+        <div style="display:flex; align-items:center; gap:12px; padding:14px 18px; border-bottom:1px solid var(--line); background:var(--surface); flex-shrink:0;">
+          <button onClick="{{ closeA11y }}" aria-label="Back to settings" style="min-width:48px; min-height:48px; width:48px; border:1px solid var(--line); border-radius:999px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0;">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#23211A" stroke-width="2.1"><line x1="19" y1="12" x2="5" y2="12" stroke-linecap="round"></line><polyline points="12 19 5 12 12 5" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+          </button>
+          <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.15;">Vision &amp; readability</h1>
+        </div>
+
+        <div style="flex:1; overflow-y:auto; padding:20px 18px 34px;">
+
+          <p style="font-size:calc(16px * var(--ts)); color:var(--ink-2); line-height:1.55;">Change how Findr looks so it is comfortable for your eyes. Your choices apply everywhere in the app straight away.</p>
+
+          <!-- Master switch. Off, Findr keeps its normal paper look and the
+               compact layout. On, colours are corrected until every one of
+               them is comfortably readable, and the roomier layout is used. -->
+          <div onClick="{{ a11yToggles.master }}" style-active="background:var(--surface-2)" style="margin-top:18px; padding:18px 16px; border:2px solid {{ a }}; border-radius:6px; background: {{ aMuted }}; cursor:pointer; display:flex; align-items:center; gap:14px;">
+            <div style="flex:1; min-width:0;">
+              <h2 style="font-size:calc(21px * var(--ts)); font-weight:700; color:var(--ink); line-height:1.2;">Accessibility mode</h2>
+              <p style="font-size:calc(15px * var(--ts)); color:var(--ink-2); margin-top:5px; line-height:1.5;">Deepens every colour until it is easy to read, and gives the app more breathing room. Everything below needs this switched on.</p>
+              <p class="mono" style="font-size:calc(13px * var(--ts)); font-weight:500; color: {{ a }}; margin-top:7px;">{{ a11yState }}</p>
+            </div>
+            <div style="width:62px; height:36px; border-radius:999px; flex-shrink:0; cursor:pointer; position:relative; transition:background 0.15s; background: {{ a11yTrack }}">
+              <div style="position:absolute; top:3px; width:30px; height:30px; border-radius:50%; background:#FBFAF5; box-shadow:0 1px 3px rgba(0,0,0,0.3); transition:left 0.15s; left: {{ a11yKnob }}"></div>
+            </div>
+          </div>
+
+          <sc-if value="{{ a11yOff }}" hint-placeholder-val="{{ false }}">
+            <p style="font-size:calc(14px * var(--ts)); color:var(--ink-2); line-height:1.55; margin-top:12px; padding:12px 14px; border:1px dashed var(--line-2); border-radius:6px;">Findr is currently using its normal paper colours and the compact layout. Turn the switch on above to make everything easier to see.</p>
+          </sc-if>
+
+          <!-- ── TEXT SIZE ────────────────────────────────────────────── -->
+          <div style="margin-top:22px; padding:18px 16px; border:1px solid var(--line); border-radius:6px; background:var(--surface);">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+              <h2 style="font-size:calc(20px * var(--ts)); font-weight:700; color:var(--ink); line-height:1.2;">Text size</h2>
+              <span class="mono" style="font-size:calc(15px * var(--ts)); font-weight:500; color: {{ a }}; white-space:nowrap;">{{ textPct }}</span>
+            </div>
+            <p style="font-size:calc(15px * var(--ts)); color:var(--ink-2); margin-top:5px; line-height:1.5;">{{ textLabel }} &middot; {{ textNote }}</p>
+
+            <!-- Steppers flank the slider. A slider alone is hard work with
+                 tremor or arthritis; a big button that moves one step at a
+                 time is not. Both drive the same setting. -->
+            <div style="display:flex; align-items:center; gap:12px; margin-top:16px;">
+              <button onClick="{{ textSmaller }}" aria-label="Make text smaller" style="min-width:56px; min-height:56px; width:56px; flex-shrink:0; border:2px solid var(--line-2); border-radius:8px; background: {{ textMinusBg }}; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink);">
+                <span class="serif" style="font-size:17px; font-weight:600; line-height:1;">A</span>
+              </button>
+              <div style="flex:1; min-width:0;">
+                <input type="range" class="findr-slider" min="0" max="4" step="1" value="{{ textStep }}" onChange="{{ onTextScale }}" aria-label="Text size"/>
+                <div style="display:flex; align-items:flex-end; justify-content:space-between; padding:2px 4px 0;">
+                  <sc-for list="{{ textTicks }}" as="t" hint-placeholder-count="5">
+                    <span style="width:{{ t.size }}; height:{{ t.size }}; border-radius:50%; background:{{ t.dot }}; display:block;"></span>
+                  </sc-for>
+                </div>
+              </div>
+              <button onClick="{{ textBigger }}" aria-label="Make text bigger" style="min-width:56px; min-height:56px; width:56px; flex-shrink:0; border:2px solid var(--line-2); border-radius:8px; background: {{ textPlusBg }}; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--ink);">
+                <span class="serif" style="font-size:31px; font-weight:600; line-height:1;">A</span>
+              </button>
+            </div>
+
+            <!-- Live preview, built from a real product row so the effect on
+                 actual app content is visible before leaving this screen. -->
+            <div style="margin-top:18px; padding:14px; border:1px dashed var(--line-2); border-radius:6px; background:var(--bg);">
+              <p class="mono" style="font-size:calc(11px * var(--ts)); color:var(--ink-3); letter-spacing:0.05em;">PREVIEW</p>
+              <div style="display:flex; align-items:center; gap:11px; margin-top:9px;">
+                <img src="assets/sony.webp" alt="" style="width:46px; height:46px; border-radius:4px; object-fit:cover; border:1px solid var(--line); flex-shrink:0; background:var(--surface);"/>
+                <div style="flex:1; min-width:0;">
+                  <p style="font-size:calc(13.5px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.3;">Sony WH-1000XM4</p>
+                  <p class="mono" style="font-size:calc(11px * var(--ts)); color:var(--ink-3); margin-top:2px;">scanned 2h ago</p>
+                </div>
+                <div style="text-align:right; flex-shrink:0;">
+                  <p class="mono" style="font-size:calc(14px * var(--ts)); font-weight:500; color:var(--ink);">S$248</p>
+                  <p class="mono" style="font-size:calc(11px * var(--ts)); color: {{ a }}">&darr; S$72</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── CONTRAST ─────────────────────────────────────────────
+               Three levels rather than one switch. Standard keeps the paper
+               ground and only corrects the foregrounds, which is enough for
+               most people and still looks like Findr. High and Higher trade
+               the paper away for progressively more separation. -->
+          <div style="margin-top:14px; padding:18px 16px; border:1px solid var(--line); border-radius:6px; background:var(--surface);">
+            <h2 style="font-size:calc(20px * var(--ts)); font-weight:700; color:var(--ink); line-height:1.2;">Contrast</h2>
+            <p style="font-size:calc(15px * var(--ts)); color:var(--ink-2); margin-top:5px; line-height:1.5;">How strongly text stands out from the background. Pick the first one that feels comfortable.</p>
+            <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+              <sc-for list="{{ contrastLevels }}" as="L" hint-placeholder-count="3">
+                <button onClick="{{ L.onPick }}" style="display:flex; align-items:center; gap:13px; min-height:64px; padding:13px; border:{{ L.ringW }} solid {{ L.ring }}; border-radius:8px; background:{{ L.bg }}; cursor:pointer; text-align:left; width:100%;">
+                  <span style="width:38px; height:38px; border-radius:6px; border:1px solid var(--line-2); background:{{ L.swatchBg }}; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                    <span class="serif" style="font-size:20px; font-weight:600; color:{{ L.swatchInk }}; line-height:1;">Aa</span>
+                  </span>
+                  <span style="flex:1; min-width:0; display:block;">
+                    <span style="display:block; font-size:calc(16px * var(--ts)); font-weight:{{ L.weight }}; color:var(--ink);">{{ L.name }}</span>
+                    <span style="display:block; font-size:calc(13.5px * var(--ts)); color:var(--ink-2); margin-top:2px; line-height:1.4;">{{ L.desc }}</span>
+                  </span>
+                  <svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="{{ a }}" stroke-width="3" style="flex-shrink:0; display:{{ L.check }}"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+                </button>
+              </sc-for>
+            </div>
+          </div>
+
+          <!-- ── COLOUR-VISION-SAFE ───────────────────────────────────── -->
+          <div onClick="{{ a11yToggles.cvdSafe }}" style-active="background:var(--surface-2)" style="margin-top:14px; padding:18px 16px; border:1px solid var(--line); border-radius:6px; background:var(--surface); cursor:pointer; display:flex; align-items:center; gap:14px;">
+            <div style="flex:1; min-width:0;">
+              <h2 style="font-size:calc(20px * var(--ts)); font-weight:700; color:var(--ink); line-height:1.2;">Colour-blind friendly</h2>
+              <p style="font-size:calc(15px * var(--ts)); color:var(--ink-2); margin-top:5px; line-height:1.5;">Swaps the green and red used for price drops and rises to blue and orange, which stay apart for red-green colour blindness.</p>
+              <p class="mono" style="font-size:calc(13px * var(--ts)); font-weight:500; color: {{ a }}; margin-top:7px;">{{ cvdState }}</p>
+            </div>
+            <div style="width:62px; height:36px; border-radius:999px; flex-shrink:0; cursor:pointer; position:relative; transition:background 0.15s; background: {{ cvdTrack }}">
+              <div style="position:absolute; top:3px; width:30px; height:30px; border-radius:50%; background:#FBFAF5; box-shadow:0 1px 3px rgba(0,0,0,0.3); transition:left 0.15s; left: {{ cvdKnob }}"></div>
+            </div>
+          </div>
+
+          <!-- ── COLOUR THEME ─────────────────────────────────────────── -->
+          <div style="margin-top:14px; padding:18px 16px; border:1px solid var(--line); border-radius:6px; background:var(--surface);">
+            <h2 style="font-size:calc(20px * var(--ts)); font-weight:700; color:var(--ink); line-height:1.2;">Colour</h2>
+            <p style="font-size:calc(15px * var(--ts)); color:var(--ink-2); margin-top:5px; line-height:1.5;">Pick whichever is easiest on your eyes. Every colour here has been checked to stay readable on this background.</p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px;">
+              <sc-for list="{{ accentSwatches }}" as="s" hint-placeholder-count="4">
+                <button onClick="{{ s.onPick }}" style="display:flex; align-items:center; gap:11px; min-height:60px; padding:12px 13px; border:{{ s.ringW }} solid {{ s.ring }}; border-radius:8px; background:{{ s.bg }}; cursor:pointer; text-align:left;">
+                  <span style="width:26px; height:26px; border-radius:50%; background:{{ s.swatch }}; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                    <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#FFFFFF" stroke-width="3.2" style="display:{{ s.check }}"><polyline points="20 6 9 17 4 12" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
+                  </span>
+                  <span style="font-size:calc(15px * var(--ts)); font-weight:{{ s.weight }}; color:var(--ink); min-width:0;">{{ s.name }}</span>
+                </button>
+              </sc-for>
+            </div>
+            <!-- Names, not just dots: a swatch alone is useless if you cannot
+                 tell the swatches apart. -->
+          </div>
+
+          <button onClick="{{ resetA11y }}" style="width:100%; min-height:56px; margin-top:18px; padding:14px; border:2px solid var(--line-2); border-radius:8px; background:var(--surface); color:var(--ink); font-family:'Public Sans'; font-size:calc(16px * var(--ts)); font-weight:600; cursor:pointer;">Reset to standard</button>
+
+          <p style="font-size:calc(13px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:16px; line-height:1.55;">These settings stay on this device.</p>
+        </div>
+      </div>
+    </sc-if>
+
     <!-- privacy policy modal -->
     <sc-if value="{{ showPrivacy }}" hint-placeholder-val="{{ false }}">
-      <div style="position:absolute; inset:0; z-index:90; background:#F4F1E8; display:flex; flex-direction:column; animation:accOpen 0.25s ease;">
-        <div style="display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid #DED9C9; background:#FBFAF5; flex-shrink:0;">
-          <button onClick="{{ closePrivacy }}" style="width:34px; height:34px; border:none; border-radius:999px; background:#EAE7DC; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+      <div style="position:absolute; inset:0; z-index:90; background:var(--bg); display:flex; flex-direction:column; animation:accOpen 0.25s ease;">
+        <div style="display:flex; align-items:center; gap:12px; padding:16px 20px; border-bottom:1px solid var(--line); background:var(--surface); flex-shrink:0;">
+          <button onClick="{{ closePrivacy }}" style="width:34px; height:34px; border:none; border-radius:999px; background:var(--surface-2); display:flex; align-items:center; justify-content:center; cursor:pointer;">
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#23211A" stroke-width="1.8"><line x1="19" y1="12" x2="5" y2="12" stroke-linecap="round"></line><polyline points="12 19 5 12 12 5" stroke-linecap="round" stroke-linejoin="round"></polyline></svg>
           </button>
-          <h1 class="serif" style="font-size:20px; font-weight:600; color:#23211A;">Privacy Policy</h1>
+          <h1 class="serif" style="font-size:calc(20px * var(--ts)); font-weight:600; color:var(--ink);">Privacy Policy</h1>
         </div>
         <div style="flex:1; overflow-y:auto; padding:20px 22px 30px;">
-          <p class="mono" style="font-size:10px; color:#9A9684; letter-spacing:0.03em;">LAST UPDATED JULY 2026 · PDPA-ALIGNED</p>
+          <p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.03em;">LAST UPDATED JULY 2026 · PDPA-ALIGNED</p>
           <sc-for list="{{ privacySections }}" as="s" hint-placeholder-count="6">
             <div style="margin-top:20px;">
-              <h2 class="serif" style="font-size:16px; font-weight:600; color:#23211A;">{{ s.title }}</h2>
-              <p style="font-size:13px; color:#6A6656; line-height:1.6; margin-top:6px;">{{ s.body }}</p>
+              <h2 class="serif" style="font-size:calc(16px * var(--ts)); font-weight:600; color:var(--ink);">{{ s.title }}</h2>
+              <p style="font-size:calc(13px * var(--ts)); color:var(--ink-2); line-height:1.6; margin-top:6px;">{{ s.body }}</p>
             </div>
           </sc-for>
-          <p class="mono" style="font-size:9.5px; color:#9A9684; text-align:center; margin-top:26px; line-height:1.5;">Questions? privacy@findr.app · Findr collects no ad-tracking data.</p>
+          <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:26px; line-height:1.5;">Questions? privacy@findr.app · Findr collects no ad-tracking data.</p>
         </div>
       </div>
     </sc-if>
@@ -822,29 +1156,29 @@ window.__resources = {
     <!-- out-of-credits paywall -->
     <sc-if value="{{ showPaywall }}" hint-placeholder-val="{{ false }}">
       <div onClick="{{ closePaywall }}" style="position:absolute; inset:0; z-index:80; display:flex; flex-direction:column; justify-content:flex-end; background:rgba(28,26,21,0.5); animation:fadeIn 0.15s ease;">
-        <div onClick="{{ stopPaywall }}" style="background:#F4F1E8; border-top:1px solid #CFC9B6; border-radius:8px 8px 0 0; padding:22px 22px 30px; box-shadow:0 -8px 30px rgba(35,33,26,0.24);">
+        <div onClick="{{ stopPaywall }}" style="background:var(--bg); border-top:1px solid var(--line-2); border-radius:8px 8px 0 0; padding:22px 22px 30px; box-shadow:0 -8px 30px rgba(35,33,26,0.24);">
           <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:6px;">
-            <h3 class="serif" style="font-size:20px; font-weight:600; color:#23211A;">You're out of scans</h3>
+            <h3 class="serif" style="font-size:calc(20px * var(--ts)); font-weight:600; color:var(--ink);">You're out of scans</h3>
             <button onClick="{{ closePaywall }}" style="border:none; background:none; cursor:pointer; padding:2px;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#6A6656" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path></svg></button>
           </div>
-          <p style="font-size:13px; color:#6A6656; line-height:1.5;">Free accounts get 5 scans a month. Get one more now, or go unlimited with Pro.</p>
-          <button onClick="{{ watchAd }}" style-active="transform:scale(0.99)" style="width:100%; height:50px; margin-top:18px; border:1px solid #DED9C9; border-radius:4px; background:#FBFAF5; color:#23211A; font-family:'Public Sans'; font-size:14px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;">
+          <p style="font-size:calc(13px * var(--ts)); color:var(--ink-2); line-height:1.5;">Free accounts get 5 scans a month. Get one more now, or go unlimited with Pro.</p>
+          <button onClick="{{ watchAd }}" style-active="transform:scale(0.99)" style="width:100%; min-height:50px; margin-top:18px; border:1px solid var(--line); border-radius:4px; background:var(--surface); color:var(--ink); font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;">
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#23211A" stroke-width="1.6"><polygon points="6 4 20 12 6 20 6 4" stroke-linejoin="round"></polygon></svg>
             Watch a 30-sec ad · +1 scan
           </button>
-          <button onClick="{{ upgradePro }}" style-active="transform:scale(0.99)" style="width:100%; height:52px; margin-top:11px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:14.5px; font-weight:700; cursor:pointer;">Go unlimited · Findr Pro S$3.99/mo</button>
-          <p class="mono" style="font-size:9.5px; color:#9A9684; text-align:center; margin-top:12px;">Cancel anytime · unlimited scans, forecasts & insights</p>
+          <button onClick="{{ upgradePro }}" style-active="transform:scale(0.99)" style="width:100%; min-height:52px; margin-top:11px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14.5px * var(--ts)); font-weight:700; cursor:pointer;">Go unlimited · Findr Pro S$3.99/mo</button>
+          <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:12px;">Cancel anytime · unlimited scans, forecasts & insights</p>
         </div>
       </div>
     </sc-if>
 
     <!-- bottom nav -->
     <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
-      <div style="height:66px; flex-shrink:0; background:#FBFAF5; border-top:1px solid #DED9C9; display:flex; flex-direction:row; align-items:center; padding:0 4px;">
+      <div class="findr-nav" style="flex-shrink:0; background:var(--surface); border-top:1px solid var(--line); display:flex; flex-direction:row; align-items:stretch; padding:0 4px;">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
-          <button onClick="{{ n.onTap }}" style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; gap:3px; border:none; background: {{ n.bg }}; cursor:pointer; padding:7px 2px; border-radius:12px; color: {{ n.color }}">
+          <button onClick="{{ n.onTap }}" aria-label="{{ n.label }}" style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:none; background: {{ n.bg }}; cursor:pointer; padding:7px 2px; border-radius:12px; color: {{ n.color }}">
             <span style="display:flex;">{{ n.icon }}</span>
-            <span style="font-size:9.5px; font-weight:600; white-space:nowrap;">{{ n.label }}</span>
+            <span class="findr-nav-label" style="font-weight:600;">{{ n.label }}</span>
           </button>
         </sc-for>
       </div>
@@ -855,7 +1189,7 @@ window.__resources = {
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:426,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Moss&quot;,&quot;Slate&quot;,&quot;Plum&quot;,&quot;Clay&quot;],&quot;default&quot;:&quot;Moss&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Scan&quot;,&quot;Result&quot;,&quot;Watchlist&quot;,&quot;Predict&quot;],&quot;default&quot;:&quot;Scan&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;showGridTexture&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
 class Component extends DCLogic {
-  state = { screen: null, scanStep: 0, activeId: 2, savedIds: [2, 3], copied: null, webRetailer: null, expandedCat: null, needNow: false, compareOpen: false, sleeping: [3], loggedIn: null, tier: 'free', credits: 5, showPaywall: false, searchQuery: '', searchMiss: false, reduceMotion: false, density: 'compact', fairPrice: true, inStock: true, showPrivacy: false, filters: { sortBy: 'featured', shopType: [], shippedFrom: [], promos: [], fastDelivery: false, freeShipping: false, minRating: 0, minPrice: '', maxPrice: '' }, filterOpen: false };
+  state = { screen: null, scanStep: 0, activeId: 2, savedIds: [2, 3], copied: null, webRetailer: null, expandedCat: null, needNow: false, compareOpen: false, sleeping: [3], loggedIn: null, tier: 'free', credits: 5, showPaywall: false, searchQuery: '', searchMiss: false, reduceMotion: false, density: 'compact', fairPrice: true, inStock: true, showPrivacy: false, textScale: 0, a11yMode: false, contrast: 0, cvdSafe: false, accent: null, showA11y: false, filters: { sortBy: 'featured', shopType: [], shippedFrom: [], promos: [], fastDelivery: false, freeShipping: false, minRating: 0, minPrice: '', maxPrice: '' }, filterOpen: false };
 
   handleScan() {
     if (this.state.tier === 'premium') return this.startScan();
@@ -873,8 +1207,68 @@ class Component extends DCLogic {
   }
 
   componentDidMount() { this.applyMotion(); }
-  applyMotion() { try { const r = document.documentElement; r.classList.toggle('reduce-motion', !!this.state.reduceMotion); r.classList.toggle('density-comfortable', this.state.density === 'comfortable'); } catch (e) {} }
-  componentWillUnmount() { clearInterval(this._t); clearTimeout(this._c); try { document.documentElement.classList.remove('reduce-motion', 'density-comfortable'); } catch (e) {} }
+
+  /* Text-size steps. 100% is the authored size; 175% is roughly the point
+     where a 390px-wide phone layout stops being able to hold two columns.
+     Steps rather than a continuous range so every stop is a tested layout. */
+  static TEXT_STEPS = [
+    { mult: 1.00, label: 'Standard', note: 'Default size' },
+    { mult: 1.15, label: 'Large',    note: 'A little bigger' },
+    { mult: 1.30, label: 'Larger',   note: 'Comfortable for most' },
+    { mult: 1.50, label: 'Big',      note: 'Easy to read at arm\u2019s length' },
+    { mult: 1.75, label: 'Biggest',  note: 'Maximum size' },
+  ];
+
+  applyMotion() {
+    try {
+      const r = document.documentElement;
+      r.classList.toggle('reduce-motion', !!this.state.reduceMotion);
+      r.classList.toggle('density-comfortable', this.state.density === 'comfortable');
+      /* Tiers are cumulative in intent but exclusive as classes: strict is
+         the paper-safe palette, hc and hc2 replace the ground entirely. */
+      const A = !!this.state.a11yMode, C = this.state.contrast | 0;
+      r.classList.toggle('a11y-strict', A && C === 0);
+      r.classList.toggle('a11y-hc',     A && C === 1);
+      r.classList.toggle('a11y-hc2',    A && C === 2);
+      r.classList.toggle('a11y-cvd',    A && !!this.state.cvdSafe);
+      const step = Component.TEXT_STEPS[this.state.textScale] || Component.TEXT_STEPS[0];
+      r.style.setProperty('--ts', String(step.mult));
+      r.style.setProperty('--findr-accent', this.accentHex());
+    } catch (e) {}
+  }
+
+  /* Turning accessibility on moves the app to the comfortable layout, and
+     turning it off puts it back to compact. It is a default, not a lock —
+     Settings > Appearance > Density still overrides it either way. */
+  setA11y(patch) {
+    const next = { ...patch };
+    if ('a11yMode' in patch && patch.a11yMode !== this.state.a11yMode) {
+      next.density = patch.a11yMode ? 'comfortable' : 'compact';
+    }
+    if (next.a11yMode === false) { next.contrast = 0; next.cvdSafe = false; }
+    this.setState(next, () => this.applyMotion());
+  }
+
+  setScale(i) {
+    const n = Math.max(0, Math.min(Component.TEXT_STEPS.length - 1, i));
+    this.setA11y(n > 0 ? { textScale: n, a11yMode: true } : { textScale: n });
+  }
+
+  accentHex() {
+    const T = { Moss: ['#4E7A52','#45694A','#1F3A24','#0E2312'], Slate: ['#4B6B86','#3F6280','#16344F','#08192B'],
+                Plum: ['#74588C','#63497A','#3A2450','#1B0E28'], Clay: ['#A0603C','#8A4E28','#5A2E10','#2E1606'] };
+    const row = T[this.state.accent || this.props.accent] || T.Moss;
+    return row[this.state.a11yMode ? (this.state.contrast | 0) + 1 : 0];
+  }
+
+  componentWillUnmount() {
+    clearInterval(this._t); clearTimeout(this._c);
+    try {
+      const r = document.documentElement;
+      r.classList.remove('reduce-motion', 'density-comfortable', 'a11y-strict', 'a11y-hc', 'a11y-hc2', 'a11y-cvd');
+      r.style.removeProperty('--ts'); r.style.removeProperty('--findr-accent');
+    } catch (e) {}
+  }
 
   startScan() {
     clearInterval(this._t);
@@ -913,7 +1307,7 @@ class Component extends DCLogic {
     return G[id] || '<rect x="4" y="4" width="16" height="16" rx="3"/>';
   }
   thumb(pr) {
-    const c = pr.tierColor || '#6A6656';
+    const c = pr.tierColor || 'var(--ink-2)';
     const photos = { 1: 'assets/anker.jpg', 2: 'assets/sony.webp', 3: 'assets/bose.jpg', 4: 'assets/airpods.jpg', 5: 'assets/switch.jpg', 6: 'assets/logitech.webp', 7: 'assets/skii.avif', 8: 'assets/estee.jpg', 9: 'assets/dyson.jpg', 10: 'assets/lululemon.webp', 11: 'assets/seiko.jpg', 12: 'assets/royalcanin.jpg' };
     if (photos[pr.id]) return React.createElement('div', { style: { width: '100%', height: '100%', background: '#fff', backgroundImage: 'url("' + photos[pr.id] + '")', backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } });
     return React.createElement('div', { style: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(135deg, ' + c + '26, ' + c + '0d)' } },
@@ -922,7 +1316,7 @@ class Component extends DCLogic {
 
   get products() {
     return {
-      1: { id: 1, tierLabel: 'SMART BUDGET', tierColor: '#5A8296', name: 'Anker Soundcore Space One', img: 'photo-1583394838336-acd977736f90', price: 115, typical: 149, years: 2,
+      1: { id: 1, tierLabel: 'SMART BUDGET', tierColor: 'var(--cat-blue)', name: 'Anker Soundcore Space One', img: 'photo-1583394838336-acd977736f90', price: 115, typical: 149, years: 2,
         rationale: 'Lowest in 90 days', specs: ['40h', 'Hybrid', 'LDAC'], anc: 'Hybrid', battery: '40h',
         honesty: { score: 82, label: 'Genuine deal', note: 'Lowest price in 90 days — and there\u2019s no fake countdown pushing you to rush.' },
         hist: [149, 145, 139, 135, 129, 115], longevity: 'Replaceable ear pads · 24-month warranty',
@@ -936,7 +1330,7 @@ class Component extends DCLogic {
           { name: 'Challenger', short: 'Challenger', logo: '\uD83C\uDFEC', base: 159, final: 149, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'TikTok Shop', short: 'TikTok', logo: '\uD83C\uDFB5', base: 145, final: 135, tag: 'ok', from: 'China', type: 'Seller', vouchers: [] },
         ] },
-      2: { id: 2, tierLabel: 'FINDR PICK', tierColor: '#4E7A52', recommended: true, name: 'Sony WH-1000XM4', img: 'photo-1546435770-a3e426bf472b', price: 248, typical: 320, years: 4,
+      2: { id: 2, tierLabel: 'FINDR PICK', tierColor: 'var(--cat-green)', recommended: true, name: 'Sony WH-1000XM4', img: 'photo-1546435770-a3e426bf472b', price: 248, typical: 320, years: 4,
         rationale: 'Best value overall', specs: ['30h', 'Class ANC', 'Multipoint'], anc: 'Class-lead', battery: '30h',
         honesty: { score: 88, label: 'Genuine deal', note: 'Priced 22% below its 90-day average and holding. A real drop, verified against six months of history.' },
         hist: [349, 314, 299, 288, 270, 248], longevity: 'Serviceable battery · widely repaired locally',
@@ -950,7 +1344,7 @@ class Component extends DCLogic {
           { name: 'Amazon SG', short: 'Amazon', logo: '\uD83D\uDCE6', base: 290, final: 285, tag: 'ok', from: 'Intl', type: 'Official', vouchers: [] },
           { name: 'Courts', short: 'Courts', logo: '\uD83C\uDFEC', base: 315, final: 300, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
         ] },
-      3: { id: 3, tierLabel: 'BUY ONCE', tierColor: '#7A6597', name: 'Bose QuietComfort Ultra', img: 'photo-1484704849700-f032a568e944', price: 479, typical: 519, years: 6,
+      3: { id: 3, tierLabel: 'BUY ONCE', tierColor: 'var(--cat-plum)', name: 'Bose QuietComfort Ultra', img: 'photo-1484704849700-f032a568e944', price: 479, typical: 519, years: 6,
         rationale: 'Built to last years', specs: ['Immersive', 'Top ANC', 'Aware'], anc: 'Top-tier', battery: '24h',
         honesty: { score: 62, label: 'Fair price', note: 'Rarely discounted — this sits close to its true floor. Waiting for a mega-sale might save ~S$25, not more.' },
         hist: [519, 509, 519, 499, 489, 479], longevity: 'Premium build · 5-yr durability · spare parts stocked',
@@ -964,7 +1358,7 @@ class Component extends DCLogic {
           { name: 'Harvey Norman', short: 'Harvey N.', logo: '\uD83C\uDFEC', base: 529, final: 509, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'Lazada Intl', short: 'Lazada', logo: '\uD83D\uDD36', base: 480, final: 470, tag: 'warn', from: 'China', type: 'Seller', vouchers: [], fake: 'Long ship time from overseas — arrival est. 2–3 weeks, no local warranty.' },
         ] },
-      4: { id: 4, tierLabel: 'POPULAR', tierColor: '#5A8296', name: 'Apple AirPods Pro 2', img: 'photo-1600294037681-c80b4cb5b434', price: 289, typical: 329, years: 3,
+      4: { id: 4, tierLabel: 'POPULAR', tierColor: 'var(--cat-blue)', name: 'Apple AirPods Pro 2', img: 'photo-1600294037681-c80b4cb5b434', price: 289, typical: 329, years: 3,
         honesty: { score: 74, label: 'Genuine deal', note: 'A solid S$40 under its usual — not the all-time low, but a fair price with no fake urgency.' },
         hist: [329, 325, 319, 309, 299, 289], longevity: 'AppleCare-eligible · battery service available locally',
         stock: { note: 'In stock at 5 sellers', level: 'in' },
@@ -978,7 +1372,7 @@ class Component extends DCLogic {
           { name: 'Best Denki', short: 'Best Denki', logo: '\uD83C\uDFEC', base: 350, final: 340, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'Apple Store', short: 'Apple', logo: '\uD83C\uDFEC', base: 362, final: 362, tag: 'ok', from: 'Singapore', type: 'Official', vouchers: [] },
         ] },
-      5: { id: 5, tierLabel: 'CONSOLE', tierColor: '#7A6597', name: 'Nintendo Switch OLED', img: 'photo-1578303512597-81e6cc155b3e', price: 449, typical: 519, years: 5,
+      5: { id: 5, tierLabel: 'CONSOLE', tierColor: 'var(--cat-plum)', name: 'Nintendo Switch OLED', img: 'photo-1578303512597-81e6cc155b3e', price: 449, typical: 519, years: 5,
         honesty: { score: 80, label: 'Genuine deal', note: 'S$70 under typical retail and stock is healthy — a genuinely good window to buy.' },
         hist: [519, 509, 499, 485, 469, 449], longevity: 'Repairable joy-cons · long first-party game support',
         stock: { note: 'In stock', level: 'in' },
@@ -991,7 +1385,7 @@ class Component extends DCLogic {
           { name: 'GameMartz', short: 'GameMartz', logo: '\uD83C\uDFEC', base: 480, final: 470, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'Courts', short: 'Courts', logo: '\uD83C\uDFEC', base: 500, final: 480, tag: 'ok', from: 'Singapore', type: 'Official', vouchers: [{ code: 'S20', off: 20 }] },
         ] },
-      6: { id: 6, tierLabel: 'PRODUCTIVITY', tierColor: '#4E7A52', name: 'Logitech MX Master 3S', img: 'photo-1527814050087-3793815479db', price: 139, typical: 159, years: 4,
+      6: { id: 6, tierLabel: 'PRODUCTIVITY', tierColor: 'var(--cat-green)', name: 'Logitech MX Master 3S', img: 'photo-1527814050087-3793815479db', price: 139, typical: 159, years: 4,
         honesty: { score: 58, label: 'Fair price', note: 'Close to its usual floor. It almost never drops hard, so this is about as good as it gets.' },
         hist: [159, 155, 149, 145, 142, 139], longevity: 'USB-C rechargeable · 70-day battery · very durable',
         stock: { note: 'In stock', level: 'in' },
@@ -1004,7 +1398,7 @@ class Component extends DCLogic {
           { name: 'Shopee Intl', short: 'Shopee', logo: '\uD83C\uDFB5', base: 159, final: 145, tag: 'warn', from: 'China', type: 'Seller', vouchers: [{ code: 'LOGI10', off: 14 }], fake: 'Overseas stock — longer shipping, grey-market warranty.' },
           { name: 'Dell Store', short: 'Dell', logo: '\uD83C\uDFEC', base: 160, final: 150, tag: 'ok', from: 'Singapore', type: 'Official', vouchers: [] },
         ] },
-      7: { id: 7, tierLabel: 'BEAUTY', tierColor: '#A65C7E', name: 'SK-II Facial Treatment Essence 230ml', img: 'photo-1608248543803-ba4f8c70ae0b', price: 175, typical: 250, years: 1,
+      7: { id: 7, tierLabel: 'BEAUTY', tierColor: 'var(--cat-rose)', name: 'SK-II Facial Treatment Essence 230ml', img: 'photo-1608248543803-ba4f8c70ae0b', price: 175, typical: 250, years: 1,
         honesty: { score: 86, label: 'Genuine deal', note: 'A rare 30% off during the 8.8 beauty liquidation — well below its guarded usual price.' },
         hist: [250, 245, 230, 210, 195, 175], longevity: '230ml lasts ~4 months · sealed authenticity code',
         stock: { note: 'In stock at 4 sellers', level: 'in' },
@@ -1017,7 +1411,7 @@ class Component extends DCLogic {
           { name: 'Amazon SG', short: 'Amazon', logo: '\uD83D\uDCE6', base: 220, final: 210, tag: 'ok', from: 'Intl', type: 'Official', vouchers: [] },
           { name: 'Sephora', short: 'Sephora', logo: '\uD83C\uDFEC', base: 289, final: 289, tag: 'ok', from: 'Singapore', type: 'Official', vouchers: [] },
         ] },
-      8: { id: 8, tierLabel: 'BEAUTY', tierColor: '#A65C7E', name: 'Estée Lauder Advanced Night Repair 50ml', img: 'photo-1629198688000-71f23e745b6e', price: 128, typical: 180, years: 1,
+      8: { id: 8, tierLabel: 'BEAUTY', tierColor: 'var(--cat-rose)', name: 'Estée Lauder Advanced Night Repair 50ml', img: 'photo-1629198688000-71f23e745b6e', price: 128, typical: 180, years: 1,
         honesty: { score: 82, label: 'Genuine deal', note: 'Down 29% in the beauty clear-out — genuinely below its typical shelf price.' },
         hist: [180, 175, 165, 150, 138, 128], longevity: '50ml lasts ~3 months · batch code verified',
         stock: { note: 'In stock', level: 'in' },
@@ -1030,7 +1424,7 @@ class Component extends DCLogic {
           { name: 'Tangs', short: 'Tangs', logo: '\uD83C\uDFEC', base: 185, final: 170, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'Sephora', short: 'Sephora', logo: '\uD83C\uDFEC', base: 195, final: 195, tag: 'ok', from: 'Singapore', type: 'Official', vouchers: [] },
         ] },
-      9: { id: 9, tierLabel: 'HOME', tierColor: '#7A6597', name: 'Dyson V12 Detect Slim Submarine', img: 'photo-1558317374-067fb5f30001', price: 899, typical: 999, years: 7,
+      9: { id: 9, tierLabel: 'HOME', tierColor: 'var(--cat-plum)', name: 'Dyson V12 Detect Slim Submarine', img: 'photo-1558317374-067fb5f30001', price: 899, typical: 999, years: 7,
         honesty: { score: 60, label: 'Fair price', note: 'Home goods are trending UP this month — this S$100 off is fair, not a steal. Buy on need.' },
         hist: [999, 989, 979, 949, 920, 899], longevity: '5-yr build · replaceable battery · genuine parts stocked',
         stock: { note: 'Low stock — 3 left at best seller', level: 'low' },
@@ -1043,7 +1437,7 @@ class Component extends DCLogic {
           { name: 'Best Denki', short: 'Best Denki', logo: '\uD83C\uDFEC', base: 1020, final: 980, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
           { name: 'Harvey Norman', short: 'Harvey N.', logo: '\uD83C\uDFEC', base: 1050, final: 999, tag: 'ok', from: 'Singapore', type: 'Retail', vouchers: [] },
         ] },
-      10: { id: 10, tierLabel: 'APPAREL', tierColor: '#5A8296', name: 'Lululemon Align High-Rise Pant 25”', img: 'photo-1518310383802-640c2de311b2', price: 85, typical: 150, years: 3,
+      10: { id: 10, tierLabel: 'APPAREL', tierColor: 'var(--cat-blue)', name: 'Lululemon Align High-Rise Pant 25”', img: 'photo-1518310383802-640c2de311b2', price: 85, typical: 150, years: 3,
         honesty: { score: 78, label: 'Genuine deal', note: 'Apparel is clearing summer stock — 43% off official, but watch cheap sellers for fakes.' },
         hist: [150, 140, 120, 105, 95, 85], longevity: 'Holds shape for years · squat-proof Nulu fabric',
         stock: { note: 'In stock', level: 'in' },
@@ -1056,7 +1450,7 @@ class Component extends DCLogic {
           { name: 'TikTok Shop', short: 'TikTok', logo: '\uD83C\uDFB5', base: 90, final: 88, tag: 'ok', from: 'China', type: 'Seller', vouchers: [] },
           { name: 'Amazon SG', short: 'Amazon', logo: '\uD83D\uDCE6', base: 130, final: 130, tag: 'ok', from: 'Intl', type: 'Official', vouchers: [] },
         ] },
-      11: { id: 11, tierLabel: 'WATCHES', tierColor: '#B07A45', name: 'Seiko Prospex SRPD55K1 Diver', img: 'photo-1523170335258-f5ed11844a49', price: 289, typical: 350, years: 10,
+      11: { id: 11, tierLabel: 'WATCHES', tierColor: 'var(--warn)', name: 'Seiko Prospex SRPD55K1 Diver', img: 'photo-1523170335258-f5ed11844a49', price: 289, typical: 350, years: 10,
         honesty: { score: 64, label: 'Fair price', note: 'Watches are trending UP on scarcity marketing. This is a fair price — don’t expect it lower soon.' },
         hist: [350, 345, 330, 315, 300, 289], longevity: 'Decade-plus lifespan · serviceable automatic movement',
         stock: { note: 'In stock', level: 'in' },
@@ -1069,7 +1463,7 @@ class Component extends DCLogic {
           { name: 'TikTok Shop', short: 'TikTok', logo: '\uD83C\uDFB5', base: 310, final: 305, tag: 'ok', from: 'China', type: 'Seller', vouchers: [] },
           { name: 'Amazon SG', short: 'Amazon', logo: '\uD83D\uDCE6', base: 320, final: 310, tag: 'ok', from: 'Intl', type: 'Official', vouchers: [] },
         ] },
-      12: { id: 12, tierLabel: 'PET CARE', tierColor: '#4E7A52', name: 'Royal Canin Maxi Adult Dog Food 15kg', img: 'photo-1583337130417-3346a1be7dee', price: 105, typical: 135, years: 1,
+      12: { id: 12, tierLabel: 'PET CARE', tierColor: 'var(--cat-green)', name: 'Royal Canin Maxi Adult Dog Food 15kg', img: 'photo-1583337130417-3346a1be7dee', price: 105, typical: 135, years: 1,
         honesty: { score: 80, label: 'Genuine deal', note: 'S$30 off the 15kg bag — a real bulk saving on a staple that rarely discounts.' },
         hist: [135, 132, 128, 120, 112, 105], longevity: '15kg bag feeds a large dog ~6 weeks',
         stock: { note: 'In stock', level: 'in' },
@@ -1119,7 +1513,7 @@ class Component extends DCLogic {
     else if (F.sortBy === 'price_desc') src = [...src].sort((x, y) => y.final - x.final);
     else if (F.sortBy === 'rating') src = [...src].sort((x, y) => attrOf(y).rating - attrOf(x).rating);
     list = src;
-    const tag = { winner: { l: '\uD83C\uDFC6 best', bg: a, t: aOn, e: a }, good: { l: 'good', bg: 'rgba(78,122,82,0.16)', t: '#3C5E3F', e: '#DED9C9' }, ok: { l: 'average', bg: '#EAE7DC', t: '#6A6656', e: '#DED9C9' }, warn: { l: '\u26A0 inflated', bg: 'rgba(166,80,63,0.14)', t: '#A6503F', e: '#A6503F' } };
+    const tag = { winner: { l: '\uD83C\uDFC6 best', bg: a, t: aOn, e: a }, good: { l: 'good', bg: 'rgba(78,122,82,0.16)', t: 'var(--ok-deep)', e: 'var(--line)' }, ok: { l: 'average', bg: 'var(--surface-2)', t: 'var(--ink-2)', e: 'var(--line)' }, warn: { l: '\u26A0 inflated', bg: 'rgba(166,80,63,0.14)', t: 'var(--danger)', e: 'var(--danger)' } };
     return list.map((r, i) => { const c = tag[r.tag]; const at = attrOf(r); return { ...r, rating: at.rating.toFixed(1), fastDelivery: at.fastDelivery, freeShipping: at.freeShipping, metaLine: (at.freeShipping ? 'Free ship' : 'Paid ship') + (at.fastDelivery ? ' · Next-day' : '') + ' · ★' + at.rating.toFixed(1), animDelay: (i * 90) + 'ms', finalStr: r.final.toFixed(2), baseStr: r.base.toFixed(2), savedStr: (r.base - r.final).toFixed(2), tagLabel: c.l, tagBg: c.bg, tagText: c.t, edge: c.e, tagAnim: r.tag === 'winner' ? 'glowPulse 2.4s ease-in-out infinite' : 'none',
       vouchers: r.vouchers.map(v => ({ code: v.code, offStr: v.off.toFixed(2), onCopy: () => this.copy(v.code), codeLabel: this.state.copied === v.code ? '\u2713 copied' : v.code })),
       onOpen: () => { this.copy('ALL'); this.setState({ screen: 'webview', webRetailer: r }); } }; });
@@ -1132,14 +1526,32 @@ class Component extends DCLogic {
     const loggedIn = this.state.loggedIn === null ? (!!this.props.startLoggedIn || (this.props.startScreen && this.props.startScreen !== 'Login')) : this.state.loggedIn;
     const screen = !loggedIn ? 'login' : (this.state.screen || startMap[this.props.startScreen] || 'scan');
     const isPro = this.state.tier === 'premium';
-    const accents = { Moss: { a: '#4E7A52', m: 'rgba(78,122,82,0.14)' }, Slate: { a: '#4B6B86', m: 'rgba(75,107,134,0.14)' }, Plum: { a: '#74588C', m: 'rgba(116,88,140,0.14)' }, Clay: { a: '#A0603C', m: 'rgba(160,96,60,0.14)' } };
-    const acc = accents[this.props.accent] || accents.Moss;
-    const a = acc.a, aMuted = acc.m, aOn = '#FBFAF5';
+    /* Accents sit a shade darker than the original design so every option
+       clears WCAG AA (4.5:1) as text on the cream ground — Clay was about
+       4.2:1 before and failed. Hues are unchanged. Under high contrast they
+       darken again to clear AAA. These stay literal hex rather than tokens
+       because they also feed SVG stroke attributes, which ignore var(). */
+    /* One accent per tier. Tier 0 is the original PaperDesign hue; tier 1
+       darkens just enough to clear AA on cream; tiers 2 and 3 go darker
+       still so the accent still reads against pure white. These stay
+       literal hex rather than tokens because they also feed SVG stroke
+       attributes, which ignore var(). */
+    const accents = {
+      Moss:  { t: ['#4E7A52','#45694A','#1F3A24','#0E2312'], m: ['rgba(78,122,82,0.14)','rgba(69,105,74,0.14)','rgba(31,58,36,0.16)','rgba(14,35,18,0.10)'] },
+      Slate: { t: ['#4B6B86','#3F6280','#16344F','#08192B'], m: ['rgba(75,107,134,0.14)','rgba(63,98,128,0.14)','rgba(22,52,79,0.16)','rgba(8,25,43,0.10)'] },
+      Plum:  { t: ['#74588C','#63497A','#3A2450','#1B0E28'], m: ['rgba(116,88,140,0.14)','rgba(99,73,122,0.14)','rgba(58,36,80,0.16)','rgba(27,14,40,0.10)'] },
+      Clay:  { t: ['#A0603C','#8A4E28','#5A2E10','#2E1606'], m: ['rgba(160,96,60,0.14)','rgba(138,78,40,0.14)','rgba(90,46,16,0.16)','rgba(46,22,6,0.10)'] },
+    };
+    const accentName = this.state.accent || this.props.accent || 'Moss';
+    const acc = accents[accentName] || accents.Moss;
+    const A11Y = !!this.state.a11yMode;
+    const TIER = A11Y ? (this.state.contrast | 0) + 1 : 0;
+    const a = acc.t[TIER], aMuted = acc.m[TIER], aOn = 'var(--surface)';
     const gridBg = (this.props.showGridTexture !== false) ? 'linear-gradient(rgba(158,150,132,0.11) 1px, transparent 1px), linear-gradient(90deg, rgba(158,150,132,0.11) 1px, transparent 1px)' : 'none';
     const P = this.products;
     const go = s => () => this.setState({ screen: s, compareOpen: false, expandedCat: null });
-    const hc = score => score >= 70 ? { c: a, bg: aMuted } : score >= 45 ? { c: '#B07A45', bg: 'rgba(176,122,69,0.14)' } : { c: '#A6503F', bg: 'rgba(166,80,63,0.12)' };
-    const stockCol = lvl => lvl === 'in' ? a : lvl === 'low' ? '#B07A45' : '#A6503F';
+    const hc = score => score >= 70 ? { c: a, bg: aMuted } : score >= 45 ? { c: 'var(--warn)', bg: 'rgba(176,122,69,0.14)' } : { c: 'var(--danger)', bg: 'rgba(166,80,63,0.12)' };
+    const stockCol = lvl => lvl === 'in' ? a : lvl === 'low' ? 'var(--warn)' : 'var(--danger)';
 
     const tiers = [P[1], P[2], P[3]].map(p => { const h = hc(p.honesty.score); return { ...p, bgImg: this.bg(p.img, 240, 240), imgUrl: this.img(p.img, 240, 240), imgEl: this.thumb(p), perYear: Math.round(p.price / p.years), honestyBg: h.bg, honestyColor: h.c, honestyLabel: p.honesty.label, onOpen: () => this.setState({ screen: 'product', activeId: p.id }) }; });
 
@@ -1148,19 +1560,19 @@ class Component extends DCLogic {
     const w = active.wait, needNow = this.state.needNow;
     let timing;
     if (needNow) timing = { verdict: 'BUY NOW', color: a, line: 'You need it today — this is the lowest price available right now. No countdown games.', showWait: false, sub: '', conf: w.conf };
-    else if (w.best === 'wait') timing = { verdict: 'WORTH WAITING', color: '#B07A45', line: w.reason, showWait: true, sub: w.waitLabel, conf: w.conf };
+    else if (w.best === 'wait') timing = { verdict: 'WORTH WAITING', color: 'var(--warn)', line: w.reason, showWait: true, sub: w.waitLabel, conf: w.conf };
     else timing = { verdict: 'BUY NOW', color: a, line: w.reason, showWait: false, sub: '', conf: w.conf };
     const isSleeping = this.state.sleeping.includes(active.id);
     const F = this.state.filters;
-    const mkRows = (cat, vals) => vals.map(v => ({ label: v, checked: F[cat].includes(v), boxBg: F[cat].includes(v) ? a : '#FBFAF5', boxBorder: F[cat].includes(v) ? a : '#CFC9B6', onToggle: () => { const cur = F[cat]; this.setState({ filters: { ...F, [cat]: cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v] } }); } }));
+    const mkRows = (cat, vals) => vals.map(v => ({ label: v, checked: F[cat].includes(v), boxBg: F[cat].includes(v) ? a : 'var(--surface)', boxBorder: F[cat].includes(v) ? a : 'var(--line-2)', onToggle: () => { const cur = F[cat]; this.setState({ filters: { ...F, [cat]: cur.includes(v) ? cur.filter(x => x !== v) : [...cur, v] } }); } }));
 
     const p = { ...active, bgImg: this.bg(active.img, 260, 260), imgUrl: this.img(active.img, 260, 260), imgEl: this.thumb(active), saveVsTypical: active.typical - active.price,
       retailers: this.buildRetailers(active.retailers, a, aOn), sparkPoints: this.spark(active.hist),
       honestyLeft: active.honesty.score + '%', honestyBg: ah.bg, honestyColor: ah.c, honestyLabel: active.honesty.label, honestyNote: active.honesty.note,
       timing, stock: active.stock.note, stockColor: stockCol(active.stock.level),
       savedFill: this.state.savedIds.includes(active.id) ? a : 'none',
-      waitTabBg: needNow ? 'transparent' : '#FBFAF5', waitTabColor: needNow ? '#9A9684' : '#23211A',
-      nowTabBg: needNow ? '#FBFAF5' : 'transparent', nowTabColor: needNow ? '#23211A' : '#9A9684',
+      waitTabBg: needNow ? 'transparent' : 'var(--surface)', waitTabColor: needNow ? 'var(--ink-3)' : 'var(--ink)',
+      nowTabBg: needNow ? 'var(--surface)' : 'transparent', nowTabColor: needNow ? 'var(--ink)' : 'var(--ink-3)',
       setWait: () => this.setState({ needNow: false }), setNow: () => this.setState({ needNow: true }),
       onAddList: () => this.toggleSave(active.id), onSleep: () => this.toggleSleep(active.id),
       locked: !isPro, showInsights: isPro, unlockPro: () => this.setState({ tier: 'premium' }),
@@ -1169,12 +1581,12 @@ class Component extends DCLogic {
       filterOpen: this.state.filterOpen,
       filterActive: F.shopType.length + F.shippedFrom.length + F.promos.length + (F.fastDelivery ? 1 : 0) + (F.freeShipping ? 1 : 0) + (F.minRating ? 1 : 0) + (F.minPrice ? 1 : 0) + (F.maxPrice ? 1 : 0) + (F.sortBy !== 'featured' ? 1 : 0) > 0,
       filterSummary: (() => { const n = F.shopType.length + F.shippedFrom.length + F.promos.length; const s = F.sortBy !== 'featured' ? ({ price_asc: 'price low→high', price_desc: 'price high→low' })[F.sortBy] : null; return [n ? n + ' filter' + (n > 1 ? 's' : '') : null, s].filter(Boolean).join(' · ') || 'all sellers'; })(),
-      sortChips: [['featured', 'Featured'], ['price_asc', 'Price: low→high'], ['price_desc', 'Price: high→low'], ['rating', 'Best rated']].map(([k, l]) => ({ label: l, active: F.sortBy === k, border: F.sortBy === k ? a : '#DED9C9', bg: F.sortBy === k ? aMuted : '#FBFAF5', color: F.sortBy === k ? a : '#23211A', onPick: () => this.setState({ filters: { ...F, sortBy: k } }) })),
+      sortChips: [['featured', 'Featured'], ['price_asc', 'Price: low→high'], ['price_desc', 'Price: high→low'], ['rating', 'Best rated']].map(([k, l]) => ({ label: l, active: F.sortBy === k, border: F.sortBy === k ? a : 'var(--line)', bg: F.sortBy === k ? aMuted : 'var(--surface)', color: F.sortBy === k ? a : 'var(--ink)', onPick: () => this.setState({ filters: { ...F, sortBy: k } }) })),
       shippedRows: mkRows('shippedFrom', ['Singapore', 'China', 'International']),
       shopRows: mkRows('shopType', ['Official store', 'Marketplace mall', 'Individual seller']),
       promoRows: mkRows('promos', ['Has voucher', 'Free shipping']),
-      logisticsRows: [['fastDelivery', 'Next-day delivery'], ['freeShipping', 'Free shipping']].map(([key, label]) => ({ label, checked: !!F[key], boxBg: F[key] ? a : '#FBFAF5', boxBorder: F[key] ? a : '#CFC9B6', onToggle: () => this.setState({ filters: { ...F, [key]: !F[key] } }) })),
-      ratingChips: [[0, 'Any'], [4, '4.0+ ★'], [4.5, '4.5+ ★']].map(([v, label]) => ({ label, active: F.minRating === v, border: F.minRating === v ? a : '#DED9C9', bg: F.minRating === v ? aMuted : '#FBFAF5', color: F.minRating === v ? a : '#23211A', onPick: () => this.setState({ filters: { ...F, minRating: v } }) })),
+      logisticsRows: [['fastDelivery', 'Next-day delivery'], ['freeShipping', 'Free shipping']].map(([key, label]) => ({ label, checked: !!F[key], boxBg: F[key] ? a : 'var(--surface)', boxBorder: F[key] ? a : 'var(--line-2)', onToggle: () => this.setState({ filters: { ...F, [key]: !F[key] } }) })),
+      ratingChips: [[0, 'Any'], [4, '4.0+ ★'], [4.5, '4.5+ ★']].map(([v, label]) => ({ label, active: F.minRating === v, border: F.minRating === v ? a : 'var(--line)', bg: F.minRating === v ? aMuted : 'var(--surface)', color: F.minRating === v ? a : 'var(--ink)', onPick: () => this.setState({ filters: { ...F, minRating: v } }) })),
       onReset: () => this.setState({ filters: { sortBy: 'featured', shopType: [], shippedFrom: [], promos: [], fastDelivery: false, freeShipping: false, minRating: 0, minPrice: '', maxPrice: '' } }),
       minPrice: this.state.filters.minPrice, maxPrice: this.state.filters.maxPrice,
       onMinPrice: (e) => this.setState({ filters: { ...F, minPrice: e.target.value } }),
@@ -1199,20 +1611,20 @@ class Component extends DCLogic {
     ].map(r => ({ ...r, bg0: col(0), bg1: col(1), bg2: col(2) }));
 
     // predict
-    const statusCfg = { drop: { dot: a, label: 'DROP', lc: '#3C5E3F', badge: aMuted, trend: a, arrow: '↓ ', series: [100, 92, 85, 78], proj: '−22% projected' }, hike: { dot: '#A6503F', label: 'HIKE', lc: '#A6503F', badge: 'rgba(166,80,63,0.12)', trend: '#A6503F', arrow: '↑ ', series: [100, 102, 104, 105], proj: '+5% projected' }, severe: { dot: '#A6503F', label: 'SHARP HIKE', lc: '#A6503F', badge: 'rgba(166,80,63,0.14)', trend: '#A6503F', arrow: '↑ ', series: [100, 105, 112, 118], proj: '+18% projected' }, stable: { dot: '#B07A45', label: 'STABLE', lc: '#B07A45', badge: 'rgba(176,122,69,0.14)', trend: '#B07A45', arrow: '→ ', series: [100, 100, 101, 100], proj: 'holding steady' } };
+    const statusCfg = { drop: { dot: a, label: 'DROP', lc: 'var(--ok-deep)', badge: aMuted, trend: a, arrow: '↓ ', series: [100, 92, 85, 78], proj: '−22% projected' }, hike: { dot: 'var(--danger)', label: 'HIKE', lc: 'var(--danger)', badge: 'rgba(166,80,63,0.12)', trend: '#A6503F', arrow: '↑ ', series: [100, 102, 104, 105], proj: '+5% projected' }, severe: { dot: 'var(--danger)', label: 'SHARP HIKE', lc: 'var(--danger)', badge: 'rgba(166,80,63,0.14)', trend: '#A6503F', arrow: '↑ ', series: [100, 105, 112, 118], proj: '+18% projected' }, stable: { dot: 'var(--warn)', label: 'STABLE', lc: 'var(--warn)', badge: 'rgba(176,122,69,0.14)', trend: '#B07A45', arrow: '→ ', series: [100, 100, 101, 100], proj: 'holding steady' } };
     const chartPts = (series) => { const mn = Math.min(...series), mx = Math.max(...series), rg = (mx - mn) || 1; return series.map((v, i) => ({ x: 8 + (i / (series.length - 1)) * 284, y: 84 - ((v - mn) / rg) * 72 })); };
     const cats = this.predictData;
-    const categories = cats.map((c, i) => { const s = statusCfg[c.status]; const pts = chartPts(s.series); const open = this.state.expandedCat === i; return { ...c, dot: s.dot, statusLabel: s.label, labelColor: s.lc, badgeBg: s.badge, trendColor: s.trend, arrow: s.arrow, projLabel: s.proj, weeks: ['W1', 'W2', 'W3', 'W4'], chartDots: pts, chartLine: pts.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), open, cardBorder: open ? s.trend : '#DED9C9', chevron: open ? 'rotate(180deg)' : 'rotate(0deg)', onToggle: () => this.setState({ expandedCat: open ? null : i }) }; });
+    const categories = cats.map((c, i) => { const s = statusCfg[c.status]; const pts = chartPts(s.series); const open = this.state.expandedCat === i; return { ...c, dot: s.dot, statusLabel: s.label, labelColor: s.lc, badgeBg: s.badge, trendColor: s.trend, arrow: s.arrow, projLabel: s.proj, weeks: ['W1', 'W2', 'W3', 'W4'], chartDots: pts, chartLine: pts.map(p => p.x.toFixed(1) + ',' + p.y.toFixed(1)).join(' '), open, cardBorder: open ? s.trend : 'var(--line)', chevron: open ? 'rotate(180deg)' : 'rotate(0deg)', onToggle: () => this.setState({ expandedCat: open ? null : i }) }; });
     const dropCount = cats.filter(c => c.status === 'drop').length, hikeCount = cats.filter(c => c.status === 'hike' || c.status === 'severe').length, stableCount = cats.filter(c => c.status === 'stable').length;
 
     // watchlist / lists
-    const mkItem = (id, extra) => { const pr = P[id]; return { ...pr, bgImg: this.bg(pr.img, 160, 160), imgUrl: this.img(pr.img, 160, 160), imgEl: this.thumb(pr), stock: pr.stock.note, stockColor: stockCol(pr.stock.level), tag: pr.honesty.score >= 70 ? 'fair now' : 'watching', tagColor: pr.honesty.score >= 70 ? a : '#9A9684', onOpen: () => this.setState({ screen: 'product', activeId: id }), sleep: false, ...extra }; };
-    const sleepItems = this.state.sleeping.map(id => mkItem(id, { sleep: true, tag: 'on hold', tagColor: '#B07A45', onDecide: () => this.toggleSleep(id), onLetGo: () => this.toggleSleep(id) }));
+    const mkItem = (id, extra) => { const pr = P[id]; return { ...pr, bgImg: this.bg(pr.img, 160, 160), imgUrl: this.img(pr.img, 160, 160), imgEl: this.thumb(pr), stock: pr.stock.note, stockColor: stockCol(pr.stock.level), tag: pr.honesty.score >= 70 ? 'fair now' : 'watching', tagColor: pr.honesty.score >= 70 ? a : 'var(--ink-3)', onOpen: () => this.setState({ screen: 'product', activeId: id }), sleep: false, ...extra }; };
+    const sleepItems = this.state.sleeping.map(id => mkItem(id, { sleep: true, tag: 'on hold', tagColor: 'var(--warn)', onDecide: () => this.toggleSleep(id), onLetGo: () => this.toggleSleep(id) }));
     const lists = [
       { name: 'Desk setup', color: a, items: [mkItem(2)] },
-      { name: 'Gifts', color: '#5A8296', items: [mkItem(1)] },
+      { name: 'Gifts', color: 'var(--cat-blue)', items: [mkItem(1)] },
     ];
-    if (sleepItems.length) lists.push({ name: 'Sleeping on it', color: '#B07A45', items: sleepItems });
+    if (sleepItems.length) lists.push({ name: 'Sleeping on it', color: 'var(--warn)', items: sleepItems });
     lists.forEach(L => L.countLabel = L.items.length + (L.items.length === 1 ? ' item' : ' items'));
 
     const scannedMap = { 2: 'scanned 2h ago', 4: 'scanned 5h ago', 1: 'scanned yesterday', 5: 'scanned 2d ago', 3: 'scanned 3d ago', 6: 'scanned 4d ago' };
@@ -1221,8 +1633,8 @@ class Component extends DCLogic {
     // trending — biggest % drops first
     const trending = Object.values(P).map(pr => ({ pr, pct: Math.round((pr.typical - pr.price) / pr.typical * 100) }))
       .sort((x, y) => y.pct - x.pct)
-      .map(({ pr, pct }) => ({ ...pr, bgImg: this.bg(pr.img, 300, 240), imgUrl: this.img(pr.img, 300, 240), imgEl: this.thumb(pr), dropPct: pct, dropColor: pct >= 25 ? '#A6503F' : a,
-        flag: pct >= 30 ? '🔥 HOT' : pct >= 20 ? 'DEAL' : 'TRACKED', flagBg: pct >= 30 ? '#A6503F' : pct >= 20 ? '#B07A45' : '#6A6656',
+      .map(({ pr, pct }) => ({ ...pr, bgImg: this.bg(pr.img, 300, 240), imgUrl: this.img(pr.img, 300, 240), imgEl: this.thumb(pr), dropPct: pct, dropColor: pct >= 25 ? 'var(--danger)' : a,
+        flag: pct >= 30 ? '🔥 HOT' : pct >= 20 ? 'DEAL' : 'TRACKED', flagBg: pct >= 30 ? 'var(--danger)' : pct >= 20 ? 'var(--warn)' : 'var(--ink-2)',
         onOpen: () => this.setState({ screen: 'product', activeId: pr.id }) }));
 
     // nav
@@ -1234,15 +1646,17 @@ class Component extends DCLogic {
       { id: 'predict', label: 'Predict', screens: ['predict'], svg: '<polyline points="22 7 14 15 10 11 2 19" stroke-linecap="round" stroke-linejoin="round"/><polyline points="16 7 22 7 22 13" stroke-linecap="round" stroke-linejoin="round"/>', to: 'predict' },
       { id: 'settings', label: 'Settings', screens: ['settings'], svg: '<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6" stroke-linecap="round"/>', to: 'settings' },
     ];
-    const navItems = navDef.map(n => { const activeNav = n.screens.includes(screen); return { label: n.label, onTap: go(n.to), color: activeNav ? a : '#9A9684', bg: activeNav ? aMuted : 'transparent',
+    const navItems = navDef.map(n => { const activeNav = n.screens.includes(screen); return { label: n.label, onTap: go(n.to), color: activeNav ? a : 'var(--ink-3)', bg: activeNav ? aMuted : 'transparent',
       icon: React.createElement('svg', { viewBox: '0 0 24 24', width: 21, height: 21, fill: 'none', stroke: 'currentColor', strokeWidth: 1.6, dangerouslySetInnerHTML: { __html: n.svg } }) }; });
+
+    const TS = Component.TEXT_STEPS[this.state.textScale] || Component.TEXT_STEPS[0];
 
     return {
       isLogin: screen === 'login', isScan: screen === 'scan', isProcessing: screen === 'processing', isResult: screen === 'result', isProduct: screen === 'product', isWebview: screen === 'webview', isTrending: screen === 'trending', isWatch: screen === 'watch', isPredict: screen === 'predict', isSettings: screen === 'settings',
       showNav: ['scan', 'result', 'product', 'watch', 'trending', 'predict', 'settings'].includes(screen),
       isPro, credits: this.state.credits, creditLabel: isPro ? 'Pro' : this.state.credits + ' left',
       showPaywall: this.state.showPaywall,
-      tierBadge: isPro ? '✦ FINDR PRO' : 'FREE', tierBadgeBg: isPro ? a : '#EAE7DC', tierBadgeColor: isPro ? aOn : '#6A6656',
+      tierBadge: isPro ? '✦ FINDR PRO' : 'FREE', tierBadgeBg: isPro ? a : 'var(--surface-2)', tierBadgeColor: isPro ? aOn : 'var(--ink-2)',
       tierSub: isPro ? 'Unlimited scans & insights' : this.state.credits + ' of 5 scans left', showUpgradeRow: !isPro,
       login: () => this.setState({ loggedIn: true, screen: 'scan' }),
       logout: () => this.setState({ loggedIn: false, tier: 'free', credits: 5, screen: null }),
@@ -1265,12 +1679,86 @@ class Component extends DCLogic {
         { title: '6. Telemetry', body: 'We use minimal, anonymised telemetry to catch crashes and improve search routing. We do not use cross-site tracking cookies for targeted advertising.' },
       ],
       searchQuery: this.state.searchQuery, showSearchHint: this.state.searchMiss,
+
+      /* ── Accessibility ──────────────────────────────────────────────── */
+      showA11y: this.state.showA11y,
+      openA11y: () => this.setState({ showA11y: true }),
+      closeA11y: () => this.setState({ showA11y: false }),
+
+      textStep: String(this.state.textScale),
+      textLabel: TS.label,
+      textNote: TS.note,
+      textPct: Math.round(TS.mult * 100) + '%',
+      textAtMin: this.state.textScale <= 0,
+      textAtMax: this.state.textScale >= Component.TEXT_STEPS.length - 1,
+      textMinusBg: this.state.textScale <= 0 ? 'var(--surface-2)' : 'var(--surface)',
+      textPlusBg: this.state.textScale >= Component.TEXT_STEPS.length - 1 ? 'var(--surface-2)' : 'var(--surface)',
+      onTextScale: (e) => this.setScale(+e.target.value),
+      textSmaller: () => this.setScale(this.state.textScale - 1),
+      textBigger: () => this.setScale(this.state.textScale + 1),
+      textTicks: Component.TEXT_STEPS.map((s, i) => ({
+        dot: i <= this.state.textScale ? a : 'var(--line-2)',
+        size: (7 + i * 2) + 'px',
+      })),
+
+      a11yOn: A11Y,
+      a11yOff: !A11Y,
+      a11yTrack: A11Y ? a : 'var(--line-2)',
+      a11yKnob: A11Y ? '30px' : '2px',
+      a11yState: A11Y ? 'On' : 'Off',
+
+      /* Contrast is a level, not a switch: Standard keeps the paper ground
+         and only corrects the foregrounds; High and Higher replace it. */
+      contrastLevels: [
+        { name: 'Paper',    desc: 'Findr\u2019s own colours, deepened' },
+        { name: 'High',     desc: 'Black on white' },
+        { name: 'Higher',   desc: 'Pure white, darkest colours' },
+      ].map((L, i) => {
+        const on = A11Y && (this.state.contrast | 0) === i;
+        return { name: L.name, desc: L.desc,
+          bg: on ? aMuted : 'var(--surface)',
+          ring: on ? a : 'var(--line)',
+          ringW: on ? '3px' : '1px',
+          weight: on ? '700' : '500',
+          check: on ? 'flex' : 'none',
+          swatchBg: ['#F4F1E8', '#FFFFFF', '#FFFFFF'][i],
+          swatchInk: ['#9A9684', '#000000', '#000000'][i],
+          onPick: () => this.setA11y({ a11yMode: true, contrast: i }),
+        };
+      }),
+
+      cvdTrack: this.state.cvdSafe ? a : 'var(--line-2)',
+      cvdKnob: this.state.cvdSafe ? '30px' : '2px',
+      cvdState: this.state.cvdSafe ? 'On' : 'Off',
+
+      accentSwatches: Object.keys(accents).map(k => {
+        const on = k === accentName;
+        const hue = accents[k].t[TIER];
+        return {
+          name: k,
+          swatch: hue,
+          ring: on ? hue : 'var(--line)',
+          ringW: on ? '3px' : '1px',
+          bg: on ? accents[k].m[TIER] : 'var(--surface)',
+          weight: on ? '700' : '500',
+          check: on ? 'flex' : 'none',
+          onPick: () => this.setState({ accent: k }, () => this.applyMotion()),
+        };
+      }),
+
+      a11yToggles: {
+        master: () => this.setA11y({ a11yMode: !this.state.a11yMode }),
+        cvdSafe: () => this.setA11y({ a11yMode: true, cvdSafe: !this.state.cvdSafe }),
+      },
+      resetA11y: () => this.setA11y(
+        { textScale: 0, a11yMode: false, contrast: 0, cvdSafe: false, accent: null, reduceMotion: false }),
+
       set: {
-        motionTrack: this.state.reduceMotion ? a : '#CFC9B6', motionKnob: this.state.reduceMotion ? '18px' : '2px',
-        compactBg: this.state.density === 'compact' ? '#FBFAF5' : 'transparent', compactColor: this.state.density === 'compact' ? '#23211A' : '#9A9684',
-        comfyBg: this.state.density === 'comfortable' ? '#FBFAF5' : 'transparent', comfyColor: this.state.density === 'comfortable' ? '#23211A' : '#9A9684',
-        fairTrack: this.state.fairPrice ? a : '#CFC9B6', fairKnob: this.state.fairPrice ? '18px' : '2px',
-        stockTrack: this.state.inStock ? a : '#CFC9B6', stockKnob: this.state.inStock ? '18px' : '2px',
+        motionTrack: this.state.reduceMotion ? a : 'var(--line-2)', motionKnob: this.state.reduceMotion ? '18px' : '2px',
+        compactBg: this.state.density === 'compact' ? 'var(--surface)' : 'transparent', compactColor: this.state.density === 'compact' ? 'var(--ink)' : 'var(--ink-3)',
+        comfyBg: this.state.density === 'comfortable' ? 'var(--surface)' : 'transparent', comfyColor: this.state.density === 'comfortable' ? 'var(--ink)' : 'var(--ink-3)',
+        fairTrack: this.state.fairPrice ? a : 'var(--line-2)', fairKnob: this.state.fairPrice ? '18px' : '2px',
+        stockTrack: this.state.inStock ? a : 'var(--line-2)', stockKnob: this.state.inStock ? '18px' : '2px',
       },
       tg: {
         reduceMotion: () => this.setState({ reduceMotion: !this.state.reduceMotion }, () => this.applyMotion()),
