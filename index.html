@@ -362,7 +362,7 @@ window.__resources = {
                 <h1 class="serif" style="font-size:calc(26px * var(--ts)); font-weight:600; color:var(--ink); letter-spacing:-0.01em; line-height:1;">Findr</h1>
                 <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.03em;">SE ASIA · JUL 2026</span>
               </div>
-              <div style="display:flex; align-items:center; gap:6px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; background:var(--surface);">
+              <div data-tour="credits" style="display:flex; align-items:center; gap:6px; padding:6px 11px; border:1px solid var(--line); border-radius:999px; background:var(--surface);">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="{{ a }}" stroke-width="1.8"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2" stroke-linecap="round"></path><circle cx="12" cy="12" r="3"></circle></svg>
                 <span class="mono" style="font-size:calc(11px * var(--ts)); font-weight:500; color:var(--ink);">{{ creditLabel }}</span>
               </div>
@@ -372,15 +372,24 @@ window.__resources = {
           <div style="flex:1; overflow-y:auto; padding:2px 20px 20px;">
             <div style="display:flex; align-items:center; gap:9px; min-height:46px; padding:0 14px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; margin-bottom:6px;">
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#6A6656" stroke-width="1.6"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4.3-4.3" stroke-linecap="round"></path></svg>
-              <input type="text" value="{{ searchQuery }}" onChange="{{ onSearchInput }}" onKeyDown="{{ onSearchKey }}" placeholder="Search a product name…" style="flex:1; min-height:44px; border:none; background:none; outline:none; font-family:'Public Sans'; font-size:calc(13.5px * var(--ts)); color:var(--ink);"/>
+              <input data-tour="search" type="text" value="{{ searchQuery }}" onChange="{{ onSearchInput }}" onKeyDown="{{ onSearchKey }}" placeholder="Search a product name…" style="flex:1; min-height:44px; border:none; background:none; outline:none; font-family:'Public Sans'; font-size:calc(13.5px * var(--ts)); color:var(--ink);"/>
             </div>
+            <sc-if value="{{ hasSuggest }}" hint-placeholder-val="{{ false }}">
+              <div data-tour="suggest" style="display:flex; align-items:center; gap:10px; margin:0 0 10px; padding:11px 13px; border:1px solid {{ a }}; border-radius:6px; background: {{ aMuted }};">
+                <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="{{ a }}" stroke-width="1.8" style="flex-shrink:0;"><circle cx="12" cy="12" r="9.5"></circle><path d="M12 16.5v-5M12 8.2v.1" stroke-linecap="round"></path></svg>
+                <p style="flex:1; min-width:0; font-size:calc(12.5px * var(--ts)); color:var(--ink); line-height:1.4;">Did you mean <button onClick="{{ acceptSuggest }}" style="border:none; background:none; padding:0; font-family:'Public Sans'; font-size:calc(12.5px * var(--ts)); font-weight:700; color: {{ a }}; text-decoration:underline; cursor:pointer;">{{ suggestName }}</button>?</p>
+                <button onClick="{{ dismissSuggest }}" aria-label="Dismiss suggestion" style="min-width:32px; min-height:32px; border:none; background:none; cursor:pointer; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--ink-3)" stroke-width="2"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path></svg>
+                </button>
+              </div>
+            </sc-if>
             <sc-if value="{{ showSearchHint }}" hint-placeholder-val="{{ false }}">
               <p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--danger); margin:0 0 10px 4px;">No match — try “Sony”, “AirPods”, “Switch”…</p>
             </sc-if>
             <div style="height:10px;"></div>
 
             <!-- viewfinder: content region -->
-            <div style="position:relative; height:264px; border-radius:4px; overflow:hidden; border:1px solid var(--line); background:var(--ink);">
+            <div data-tour="viewfinder" style="position:relative; height:264px; border-radius:4px; overflow:hidden; border:1px solid var(--line); background:var(--ink);">
               <div style="width:100%; height:100%; background:#0f1512; background-image:url('assets/camera-scene.jpg'); background-size:cover; background-position:center;"></div>
               <div style="position:absolute; top:12px; left:12px; display:flex; align-items:center; gap:7px; padding:5px 10px; background:rgba(28,26,21,0.55); border-radius:999px;">
                 <span style="width:6px; height:6px; border-radius:50%; background: {{ a }}"></span>
@@ -395,13 +404,13 @@ window.__resources = {
               </div>
             </div>
 
-            <button onClick="{{ startScan }}" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:14px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.1s;">
+            <button onClick="{{ startScan }}" data-tour="scanbtn" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:14px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:background 0.1s;">
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2" stroke-linecap="round"></path><circle cx="12" cy="12" r="3.2"></circle></svg>
               Scan to compare
             </button>
 
             <div style="display:flex; align-items:baseline; justify-content:space-between; margin:24px 0 10px;">
-              <h2 class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink);">Recent scans</h2>
+              <h2 data-tour="recent" class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink);">Recent scans</h2>
               <span onClick="{{ goWatchlist }}" style="font-size:calc(12px * var(--ts)); color: {{ a }}; font-weight:600; cursor:pointer;">Watchlist →</span>
             </div>
             <div style="border-top:1px solid var(--line);">
@@ -548,7 +557,7 @@ window.__resources = {
 
             <!-- true lowest -->
             <div style="display:flex; align-items:baseline; gap:8px; margin:20px 0 10px;">
-              <h2 class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">True lowest price</h2>
+              <h2 data-tour="lowest" class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">True lowest price</h2>
               <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.retailerCount }} sellers · stacked</span>
             </div>
             <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;">
@@ -584,7 +593,7 @@ window.__resources = {
                   <div style="padding:10px 13px;">
                     <sc-for list="{{ r.vouchers }}" as="v" hint-placeholder-count="1">
                       <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                        <button onClick="{{ v.onCopy }}" style="display:flex; align-items:center; gap:6px; padding:5px 9px; border:1px dashed {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
+                        <button data-tour="vouchers" onClick="{{ v.onCopy }}" style="display:flex; align-items:center; gap:6px; padding:5px 9px; border:1px dashed {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
                           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="{{ a }}" stroke-width="1.7"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                           <span class="mono" style="font-size:calc(11px * var(--ts)); font-weight:500; color: {{ a }}">{{ v.codeLabel }}</span>
                         </button>
@@ -761,7 +770,7 @@ window.__resources = {
       <sc-if value="{{ isWatch }}" hint-placeholder-val="{{ true }}">
         <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
           <div style="padding:20px 20px 12px; border-bottom:1px solid var(--line); flex-shrink:0;">
-            <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Watchlist</h1>
+            <h1 data-tour="watchhead" class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Watchlist</h1>
             <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); margin-top:2px;">We ping you only when a price becomes genuinely fair — and only if it's in stock.</p>
           </div>
           <div style="flex:1; overflow-y:auto; padding:16px 20px 22px;">
@@ -807,7 +816,7 @@ window.__resources = {
         <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
           <div style="padding:20px 20px 14px; border-bottom:1px solid var(--line); flex-shrink:0;">
             <div style="display:flex; align-items:center; gap:8px;">
-              <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Trending deals</h1>
+              <h1 data-tour="trendhead" class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Trending deals</h1>
               <span style="display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px; background:rgba(166,80,63,0.12);"><span style="width:6px; height:6px; border-radius:50%; background:var(--danger); animation:pulseDot 1.6s ease-in-out infinite;"></span><span class="mono" style="font-size:calc(9px * var(--ts)); font-weight:500; color:var(--danger); letter-spacing:0.04em;">LIVE</span></span>
             </div>
             <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); line-height:1.5; margin-top:4px;">Singapore market signals show heavy retailer liquidation in <b style="color:var(--ink);">beauty</b> and <b style="color:var(--ink);">apparel</b> this week.</p>
@@ -841,7 +850,7 @@ window.__resources = {
       <sc-if value="{{ isPredict }}" hint-placeholder-val="{{ true }}">
         <div style="position:absolute; inset:0; display:flex; flex-direction:column; background:var(--bg);">
           <div style="padding:20px 20px 12px; border-bottom:1px solid var(--line); flex-shrink:0;">
-            <h1 class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Market forecasts</h1>
+            <h1 data-tour="predicthead" class="serif" style="font-size:calc(23px * var(--ts)); font-weight:600; color:var(--ink);">Market forecasts</h1>
             <p style="font-size:calc(12.5px * var(--ts)); color:var(--ink-2); margin-top:2px;">30-day price movement across SE Asia.</p>
             <div style="display:flex; gap:16px; margin-top:12px;">
               <div style="display:flex; align-items:center; gap:6px;"><span class="mono" style="font-size:calc(16px * var(--ts)); font-weight:500; color: {{ a }}">{{ dropCount }}</span><span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">drops</span></div>
@@ -866,7 +875,7 @@ window.__resources = {
                         <span class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.05em;">30-DAY INDEX PROJECTION</span>
                         <span class="mono" style="font-size:calc(9px * var(--ts)); color: {{ c.labelColor }}">{{ c.projLabel }}</span>
                       </div>
-                      <div style="background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:12px 12px 8px;">
+                      <div data-tour="chart" style="background:var(--surface); border:1px solid var(--line); border-radius:4px; padding:12px 12px 8px;">
                         <svg viewBox="0 0 300 96" style="width:100%; height:88px;" preserveAspectRatio="none">
                           <line x1="0" y1="24" x2="300" y2="24" stroke="#EAE7DC" stroke-width="1"></line>
                           <line x1="0" y1="60" x2="300" y2="60" stroke="#EAE7DC" stroke-width="1"></line>
@@ -926,8 +935,18 @@ window.__resources = {
               <button onClick="{{ upgradePro }}" style-active="transform:scale(0.99)" style="width:100%; min-height:44px; margin-top:10px; border:none; border-radius:4px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:700; cursor:pointer;">Upgrade to Findr Pro · S$3.99/mo</button>
             </sc-if>
 
+            <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">GETTING STARTED</p>
+            <div onClick="{{ startTour }}" style-active="background:var(--surface-2)" style="display:flex; align-items:center; gap:13px; padding:16px 14px; border:1px solid var(--line); border-radius:4px; background:var(--surface); cursor:pointer;">
+              <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="{{ a }}" stroke-width="1.7" style="flex-shrink:0;"><circle cx="12" cy="12" r="9.5"></circle><path d="M9.6 9.4a2.5 2.5 0 1 1 3.4 2.3c-.6.3-1 .9-1 1.6v.3" stroke-linecap="round"></path><circle cx="12" cy="17.2" r="1.05" fill="{{ a }}" stroke="none"></circle></svg>
+              <div style="flex:1; min-width:0;">
+                <p style="font-size:calc(15px * var(--ts)); font-weight:700; color:var(--ink);">Show me around</p>
+                <p style="font-size:calc(12px * var(--ts)); color:var(--ink-2); margin-top:2px; line-height:1.45;">A short walk through every part of Findr</p>
+              </div>
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="{{ a }}" stroke-width="2" style="flex-shrink:0;"><path d="M9 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            </div>
+
             <p class="mono" style="font-size:calc(9px * var(--ts)); color:var(--ink-3); letter-spacing:0.06em; margin:26px 0 10px;">ACCESSIBILITY</p>
-            <div onClick="{{ openA11y }}" style-active="background:var(--surface-2)" style="display:flex; align-items:center; gap:13px; padding:16px 14px; border:1px solid {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
+            <div onClick="{{ openA11y }}" data-tour="a11yrow" style-active="background:var(--surface-2)" style="display:flex; align-items:center; gap:13px; padding:16px 14px; border:1px solid {{ a }}; border-radius:4px; background: {{ aMuted }}; cursor:pointer;">
               <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="{{ a }}" stroke-width="1.7" style="flex-shrink:0;"><circle cx="12" cy="12" r="9.5"></circle><circle cx="12" cy="7.4" r="1.15" fill="{{ a }}" stroke="none"></circle><path d="M7.6 10.4h8.8M12 10.6V16M12 13.2l-2.6 3.6M12 13.2l2.6 3.6" stroke-linecap="round"></path></svg>
               <div style="flex:1; min-width:0;">
                 <p style="font-size:calc(15px * var(--ts)); font-weight:700; color:var(--ink);">Vision &amp; readability</p>
@@ -986,6 +1005,45 @@ window.__resources = {
       </sc-if>
 
     </div>
+
+    <!-- ============ GUIDED TOUR ============
+         The dark ground is drawn as an enormous box-shadow spreading out
+         from the highlighted rectangle, which leaves a genuine hole rather
+         than a lighter patch — the anchor underneath stays fully legible
+         and at its real contrast. Steps with no anchor dim the whole frame
+         and centre the card instead. -->
+    <sc-if value="{{ tourOn }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute; inset:0; z-index:200;">
+
+        <sc-if value="{{ tourSpot }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute; left:{{ tourX }}; top:{{ tourY }}; width:{{ tourW }}; height:{{ tourH }}; border-radius:8px; box-shadow:0 0 0 9999px rgba(18,16,12,0.78), 0 0 0 2px {{ a }} inset; pointer-events:none; transition:all 0.28s cubic-bezier(0.4,0,0.2,1);"></div>
+        </sc-if>
+        <sc-if value="{{ tourPlain }}" hint-placeholder-val="{{ false }}">
+          <div style="position:absolute; inset:0; background:rgba(18,16,12,0.78);"></div>
+        </sc-if>
+
+        <div style="position:absolute; left:14px; right:14px; {{ tourCardPos }}; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 16px 14px; box-shadow:0 14px 40px rgba(0,0,0,0.4); max-height:{{ tourCardMax }}; overflow-y:auto;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
+            <h2 class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2;">{{ tourTitle }}</h2>
+            <span class="mono" style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); white-space:nowrap; flex-shrink:0;">{{ tourCount }}</span>
+          </div>
+          <p style="font-size:calc(13.5px * var(--ts)); color:var(--ink-2); line-height:1.6; margin-top:8px;">{{ tourBody }}</p>
+
+          <div style="display:flex; align-items:center; gap:5px; margin-top:14px;">
+            <sc-for list="{{ tourDots }}" as="d" hint-placeholder-count="17">
+              <span style="width:{{ d.w }}; height:6px; border-radius:999px; background:{{ d.bg }}; display:block; transition:all 0.2s;"></span>
+            </sc-for>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:9px; margin-top:14px;">
+            <button onClick="{{ tourSkip }}" style="min-height:46px; padding:12px 14px; border:none; background:none; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink-3); cursor:pointer;">Skip</button>
+            <div style="flex:1;"></div>
+            <button onClick="{{ tourBack }}" style="visibility:{{ tourBackVis }}; min-height:46px; padding:12px 18px; border:1px solid var(--line-2); border-radius:8px; background:var(--surface); font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink); cursor:pointer;">Back</button>
+            <button onClick="{{ tourNext }}" style-active="transform:scale(0.98)" style="min-height:46px; padding:12px 22px; border:none; border-radius:8px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:700; cursor:pointer;">{{ tourNextLabel }}</button>
+          </div>
+        </div>
+      </div>
+    </sc-if>
 
     <!-- ============ ACCESSIBILITY ============
          Deliberately oversized throughout: 17-21px labels against the app's
@@ -1174,7 +1232,7 @@ window.__resources = {
 
     <!-- bottom nav -->
     <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
-      <div class="findr-nav" style="flex-shrink:0; background:var(--surface); border-top:1px solid var(--line); display:flex; flex-direction:row; align-items:stretch; padding:0 4px;">
+      <div class="findr-nav" data-tour="nav" style="flex-shrink:0; background:var(--surface); border-top:1px solid var(--line); display:flex; flex-direction:row; align-items:stretch; padding:0 4px;">
         <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
           <button onClick="{{ n.onTap }}" aria-label="{{ n.label }}" style="flex:1 1 0; min-width:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; border:none; background: {{ n.bg }}; cursor:pointer; padding:7px 2px; border-radius:12px; color: {{ n.color }}">
             <span style="display:flex;">{{ n.icon }}</span>
@@ -1189,7 +1247,7 @@ window.__resources = {
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:426,&quot;height&quot;:900},&quot;accent&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Moss&quot;,&quot;Slate&quot;,&quot;Plum&quot;,&quot;Clay&quot;],&quot;default&quot;:&quot;Moss&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Appearance&quot;},&quot;startScreen&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Scan&quot;,&quot;Result&quot;,&quot;Watchlist&quot;,&quot;Predict&quot;],&quot;default&quot;:&quot;Scan&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Demo&quot;},&quot;showGridTexture&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Appearance&quot;}}">
 class Component extends DCLogic {
-  state = { screen: null, scanStep: 0, activeId: 2, savedIds: [2, 3], copied: null, webRetailer: null, expandedCat: null, needNow: false, compareOpen: false, sleeping: [3], loggedIn: null, tier: 'free', credits: 5, showPaywall: false, searchQuery: '', searchMiss: false, reduceMotion: false, density: 'compact', fairPrice: true, inStock: true, showPrivacy: false, textScale: 0, a11yMode: false, contrast: 0, cvdSafe: false, accent: null, showA11y: false, filters: { sortBy: 'featured', shopType: [], shippedFrom: [], promos: [], fastDelivery: false, freeShipping: false, minRating: 0, minPrice: '', maxPrice: '' }, filterOpen: false };
+  state = { screen: null, scanStep: 0, activeId: 2, savedIds: [2, 3], copied: null, webRetailer: null, expandedCat: null, needNow: false, compareOpen: false, sleeping: [3], loggedIn: null, tier: 'free', credits: 5, showPaywall: false, searchQuery: '', searchMiss: false, searchSuggest: null, reduceMotion: false, density: 'compact', fairPrice: true, inStock: true, showPrivacy: false, tourStep: null, tourRect: null, textScale: 0, a11yMode: false, contrast: 0, cvdSafe: false, accent: null, showA11y: false, filters: { sortBy: 'featured', shopType: [], shippedFrom: [], promos: [], fastDelivery: false, freeShipping: false, minRating: 0, minPrice: '', maxPrice: '' }, filterOpen: false };
 
   handleScan() {
     if (this.state.tier === 'premium') return this.startScan();
@@ -1197,13 +1255,107 @@ class Component extends DCLogic {
     this.setState({ showPaywall: true });
   }
 
-  runSearch() {
-    const q = (this.state.searchQuery || '').trim().toLowerCase();
-    if (!q) return;
+  /* ── Search ────────────────────────────────────────────────────────
+     A plain substring match fails the moment someone types "soony", which
+     on a phone keyboard is most of the time. So: exact substring first,
+     then a fuzzy pass over every word of every product name plus a small
+     table of brand nicknames, and if the best candidate is close enough
+     we offer it as "Did you mean …?" rather than guessing silently. */
+
+  /* Damerau-Levenshtein: like Levenshtein but counts a transposition
+     (sonu -> sony) as one edit, not two. Adjacent-key slips are the most
+     common typo on a touch keyboard, so this matters more than it looks. */
+  static editDistance(a, b) {
+    if (a === b) return 0;
+    if (!a.length) return b.length;
+    if (!b.length) return a.length;
+    const d = [];
+    for (let i = 0; i <= a.length; i++) d[i] = [i];
+    for (let j = 0; j <= b.length; j++) d[0][j] = j;
+    for (let i = 1; i <= a.length; i++) {
+      for (let j = 1; j <= b.length; j++) {
+        const cost = a[i-1] === b[j-1] ? 0 : 1;
+        d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + cost);
+        if (i > 1 && j > 1 && a[i-1] === b[j-2] && a[i-2] === b[j-1]) {
+          d[i][j] = Math.min(d[i][j], d[i-2][j-2] + cost);
+        }
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  /* Everything a product can be found by: its full name, each word of it,
+     and the informal names people actually type. */
+  searchIndex() {
+    if (this._idx) return this._idx;
+    const NICK = {
+      1: ['anker', 'soundcore', 'space one'],
+      2: ['sony', 'xm4', 'wh1000', 'wh-1000', 'headphones'],
+      3: ['bose', 'quietcomfort', 'qc ultra'],
+      4: ['apple', 'airpods', 'airpod', 'pro 2'],
+      5: ['nintendo', 'switch', 'oled'],
+      6: ['logitech', 'mx master', 'mouse'],
+      7: ['sk-ii', 'skii', 'sk2', 'essence'],
+      8: ['estee', 'estée', 'lauder', 'night repair'],
+      9: ['dyson', 'v12', 'vacuum'],
+      10: ['lululemon', 'lulu', 'align', 'leggings'],
+      11: ['seiko', 'watch'],
+      12: ['royal canin', 'dog food', 'royalcanin'],
+    };
     const P = this.products;
-    const hit = Object.keys(P).find(k => P[k].name.toLowerCase().includes(q));
-    if (hit) this.setState({ screen: 'product', activeId: +hit, searchQuery: '', searchMiss: false });
-    else this.setState({ searchMiss: true });
+    this._idx = Object.keys(P).map(k => {
+      const name = P[k].name;
+      const words = name.toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(w => w.length > 1);
+      return { id: +k, name, terms: [...new Set([name.toLowerCase(), ...words, ...(NICK[k] || [])])] };
+    });
+    return this._idx;
+  }
+
+  /* Returns {exact} or {suggestion} or {} — never a silent wrong guess. */
+  findProduct(raw) {
+    const q = (raw || '').trim().toLowerCase();
+    if (!q) return {};
+    const idx = this.searchIndex();
+
+    const exact = idx.find(e => e.terms.some(t => t.includes(q)));
+    if (exact) return { exact };
+
+    /* Tolerance scales with word length: one edit on a short word, two on
+       anything longer. "sonu"->"sony" yes; "sock"->"sony" no. */
+    let best = null;
+    for (const e of idx) {
+      for (const t of e.terms) {
+        const budget = t.length <= 4 ? 1 : t.length <= 7 ? 2 : 3;
+        if (Math.abs(t.length - q.length) > budget) continue;
+        const d = Component.editDistance(q, t);
+        if (d <= budget && (!best || d < best.d)) best = { d, entry: e, term: t };
+      }
+      /* also catch a good prefix: "airpo" -> "airpods" */
+      if (!best && q.length >= 4) {
+        const pre = e.terms.find(t => t.startsWith(q.slice(0, Math.max(4, q.length - 1))));
+        if (pre) best = { d: 1.5, entry: e, term: pre };
+      }
+    }
+    return best ? { suggestion: best.entry, matched: best.term } : {};
+  }
+
+  runSearch() {
+    const q = (this.state.searchQuery || '').trim();
+    if (!q) return;
+    const r = this.findProduct(q);
+    if (r.exact) {
+      return this.setState({ screen: 'product', activeId: r.exact.id, searchQuery: '', searchMiss: false, searchSuggest: null });
+    }
+    if (r.suggestion) {
+      return this.setState({ searchMiss: false, searchSuggest: { id: r.suggestion.id, name: r.suggestion.name } });
+    }
+    this.setState({ searchMiss: true, searchSuggest: null });
+  }
+
+  acceptSuggestion() {
+    const s = this.state.searchSuggest;
+    if (!s) return;
+    this.setState({ screen: 'product', activeId: s.id, searchQuery: '', searchMiss: false, searchSuggest: null });
   }
 
   componentDidMount() { this.applyMotion(); }
@@ -1247,6 +1399,148 @@ class Component extends DCLogic {
     }
     if (next.a11yMode === false) { next.contrast = 0; next.cvdSafe = false; }
     this.setState(next, () => this.applyMotion());
+  }
+
+  /* ══ GUIDED TOUR ═══════════════════════════════════════════════════
+     A dark overlay with a hole punched over whatever is being described,
+     plus a card explaining it. Each step names a screen and, optionally,
+     a data-tour anchor in the markup; the engine switches screen, scrolls
+     the anchor into view, measures it, and draws around it. Steps with no
+     anchor render a centred card instead — used for the opening and
+     closing beats, and for anything that describes a whole screen.        */
+  static TOUR = [
+    { screen: 'scan', title: 'Welcome to Findr',
+      body: 'Findr finds the real lowest price for anything you are about to buy, across every major store at once. This tour takes about a minute.' },
+
+    { screen: 'scan', target: 'viewfinder', title: 'Point at anything',
+      body: 'Scan a product in a shop, a box on your table, or something on another screen. Findr recognises it and starts hunting for a better price than the one in front of you.' },
+
+    { screen: 'scan', target: 'scanbtn', title: 'One tap to compare',
+      body: 'This checks every seller at once. It usually takes a couple of seconds — you do not have to open five shopping apps yourself.' },
+
+    { screen: 'scan', target: 'search', title: 'Or just type the name',
+      body: 'Do not worry about spelling. Type “soony” or “nintedo” and Findr will ask if you meant Sony or Nintendo rather than telling you nothing was found.' },
+
+    { screen: 'scan', target: 'credits', title: 'Your free scans',
+      body: 'Free accounts get a handful of scans. This counts down as you use them. Findr Pro removes the limit and unlocks price history and forecasts.' },
+
+    { screen: 'scan', target: 'recent', title: 'Everything you have scanned',
+      body: 'Recent scans stay here with the price at the time and how much it has moved since. Tap any of them to open the full breakdown again.' },
+
+    { screen: 'product', title: 'The deal breakdown',
+      body: 'This is what a scan gives you. The headline is the Findr pick: the seller we would actually buy from, and what it saves against the price you would have paid.' },
+
+    { screen: 'product', target: 'lowest', title: 'Every seller, stacked',
+      body: 'Sellers are ranked by what you truly pay — item price plus shipping, minus every voucher that genuinely applies. The cheapest sticker price is often not the cheapest total.' },
+
+    { screen: 'product', target: 'vouchers', title: 'Vouchers, already stacked',
+      body: 'Findr finds the codes and works out which ones combine. Tap to copy them all and go straight to the checkout with the discount already worked out.' },
+
+    { screen: 'product', title: 'Spotting a fake sale',
+      body: 'Some listings get an “inflated” flag. That means the seller raised the price shortly before discounting it, so the sale is not a real one. Findr checks 90 days of history before it calls anything a deal.' },
+
+    { screen: 'watch', target: 'watchhead', title: 'Things you are waiting on',
+      body: 'Save anything you are not ready to buy. Findr keeps watching the price and tells you when it genuinely drops — not every time a shop runs a sale banner.' },
+
+    { screen: 'trending', target: 'trendhead', title: 'What is moving right now',
+      body: 'Deals happening across the region, grouped by category. The badges tell you whether something is at its lowest ever found, or just cheap today.' },
+
+    { screen: 'predict', target: 'predicthead', title: 'Looking ahead',
+      body: 'Findr forecasts where prices are going over the next 30 days, so you can tell the difference between “buy now” and “wait two weeks”.' },
+
+    { screen: 'predict', target: 'chart', expand: 0, title: 'Reading the graph',
+      body: 'The line is the last few weeks of real price history. A downward line with ↓ DROP means it is falling and worth waiting. ↑ HIKE means it is climbing and worth buying now. STABLE means it is not moving. The arrows carry the meaning, so it reads the same if you cannot separate the colours.' },
+
+    { screen: 'settings', title: 'Settings',
+      body: 'Your account, alerts and appearance live here. Alerts are deliberately quiet: Findr only pings you when a watched price is genuinely fair.' },
+
+    { screen: 'settings', target: 'a11yrow', title: 'Make it easier to see',
+      body: 'Vision and readability holds the accessibility controls: bigger text in five steps, three levels of contrast, and a colour-blind friendly mode that swaps the green and red price arrows for blue and orange.' },
+
+    { screen: 'scan', target: 'nav', title: 'Getting around',
+      body: 'These five take you between the scanner, your saved items, the trending deals and the forecasts. That is everything — happy hunting.' },
+  ];
+
+  startTour() {
+    this._tourTier = this.state.tier;
+    this.setState({ tourStep: 0, tier: 'premium', showA11y: false, showPrivacy: false,
+                    showPaywall: false, screen: 'scan' }, () => this.placeTour());
+  }
+
+  endTour() {
+    const t = this._tourTier || 'free';
+    this._tourTier = null;
+    this.setState({ tourStep: null, tourRect: null, tier: t });
+  }
+
+  goTourStep(i) {
+    const steps = Component.TOUR;
+    if (i < 0 || i >= steps.length) return this.endTour();
+    const s = steps[i];
+    const patch = { tourStep: i, tourRect: null, screen: s.screen };
+    if (s.screen === 'product') patch.activeId = 2;
+    /* Predict renders its charts only inside an expanded category, so the
+       graph step has to open one first — and the steps around it close it
+       again so the screen reads normally. */
+    patch.expandedCat = s.expand != null ? s.expand : null;
+    this.setState(patch, () => this.placeTour());
+  }
+
+  /* Measure the anchor in the frame's own coordinate space. The frame is
+     transform:scale()d on desktop, so client rects have to be divided by
+     the live scale or the hole lands in the wrong place on a big monitor. */
+  placeTour() {
+    const step = Component.TOUR[this.state.tourStep];
+    if (!step) return;
+    if (!step.target) { this.setState({ tourRect: null }); return; }
+
+    const attempt = (tries) => {
+      const frame = document.querySelector('.findr-frame');
+      const el = frame && frame.querySelector('[data-tour="' + step.target + '"]');
+      if (!el || !frame) {
+        if (tries > 0) return setTimeout(() => attempt(tries - 1), 60);
+        return this.setState({ tourRect: null });
+      }
+      /* Find the scroll container by computed style, not by matching the
+         style attribute text: React re-serialises inline styles with a
+         space after the colon, so a [style*="overflow-y:auto"] selector
+         silently matches nothing. */
+      let scroller = null;
+      for (let n = el.parentElement; n && n !== frame.parentElement; n = n.parentElement) {
+        const ov = getComputedStyle(n).overflowY;
+        if ((ov === 'auto' || ov === 'scroll') && n.scrollHeight > n.clientHeight + 1) { scroller = n; break; }
+      }
+      if (scroller) {
+        /* offsetTop is relative to the nearest positioned ancestor, which
+           is often not the scroller — so measure the gap directly and
+           divide by the frame scale, since scrollTop is untransformed. */
+        const fr0 = frame.getBoundingClientRect();
+        const sc = fr0.width / frame.offsetWidth || 1;
+        const sr = scroller.getBoundingClientRect();
+        const er0 = el.getBoundingClientRect();
+        const delta = ((er0.top - sr.top) - (sr.height / 2 - er0.height / 2)) / sc;
+        scroller.scrollTop = Math.max(0, scroller.scrollTop + delta);
+      }
+      requestAnimationFrame(() => {
+        const fr = frame.getBoundingClientRect();
+        const er = el.getBoundingClientRect();
+        const scale = fr.width / frame.offsetWidth || 1;
+        const pad = 6, M = 2;
+        const FW = frame.offsetWidth, FH = frame.offsetHeight;
+        let x = (er.left - fr.left) / scale - pad;
+        let y = (er.top - fr.top) / scale - pad;
+        let w = er.width / scale + pad * 2;
+        let h = er.height / scale + pad * 2;
+        /* clamp inside the frame: a full-width anchor plus padding would
+           otherwise spill past the rounded corners */
+        if (x < M) { w += x - M; x = M; }
+        if (y < M) { h += y - M; y = M; }
+        w = Math.min(w, FW - x - M);
+        h = Math.min(h, FH - y - M);
+        this.setState({ tourRect: { x, y, w, h } });
+      });
+    };
+    attempt(6);
   }
 
   setScale(i) {
@@ -1678,11 +1972,67 @@ class Component extends DCLogic {
         { title: '5. Your rights', body: 'You keep full control of your data. Request a complete export or permanent account deletion at any time from Settings, and we’ll action it promptly.' },
         { title: '6. Telemetry', body: 'We use minimal, anonymised telemetry to catch crashes and improve search routing. We do not use cross-site tracking cookies for targeted advertising.' },
       ],
-      searchQuery: this.state.searchQuery, showSearchHint: this.state.searchMiss,
+      searchQuery: this.state.searchQuery, showSearchHint: this.state.searchMiss && !this.state.searchSuggest,
+      hasSuggest: !!this.state.searchSuggest,
+      suggestName: this.state.searchSuggest ? this.state.searchSuggest.name : '',
+      acceptSuggest: () => this.acceptSuggestion(),
+      dismissSuggest: () => this.setState({ searchSuggest: null, searchQuery: '' }),
+
+      /* ── Guided tour ────────────────────────────────────────────────── */
+      ...(() => {
+        const i = this.state.tourStep;
+        if (i == null) return { tourOn: false, tourSpot: false, tourPlain: false };
+        const steps = Component.TOUR, s = steps[i], R = this.state.tourRect;
+        const fEl = (typeof document !== 'undefined') ? document.querySelector('.findr-frame') : null;
+        const FRAME_H = fEl ? fEl.offsetHeight : 844;
+        /* Put the card on whichever side of the hole has more room, cap it
+           to that space, and never let it go below a readable minimum —
+           at 175% text a naive "below if it fits" rule clips the card off
+           the bottom of the frame. */
+        let cardPos = 'bottom:14px', cardMax = Math.round(FRAME_H * 0.74);
+        if (R) {
+          const below = FRAME_H - (R.y + R.h) - 26;
+          const above = R.y - 26;
+          const floor = Math.round(FRAME_H * 0.34);
+          if (below >= above) {
+            cardPos = 'top:' + Math.round(R.y + R.h + 14) + 'px';
+            cardMax = Math.max(floor, Math.min(below, Math.round(FRAME_H * 0.72)));
+          } else {
+            cardPos = 'bottom:' + Math.round(FRAME_H - R.y + 14) + 'px';
+            cardMax = Math.max(floor, Math.min(above, Math.round(FRAME_H * 0.72)));
+          }
+        }
+        return {
+          tourOn: true,
+          tourSpot: !!R,
+          tourPlain: !R,
+          tourX: R ? R.x + 'px' : '0px',
+          tourY: R ? R.y + 'px' : '0px',
+          tourW: R ? R.w + 'px' : '0px',
+          tourH: R ? R.h + 'px' : '0px',
+          tourCardPos: cardPos,
+          tourCardMax: cardMax + 'px',
+          tourTitle: s.title,
+          tourBody: s.body,
+          tourCount: (i + 1) + ' of ' + steps.length,
+          tourFirst: i === 0,
+          tourLast: i === steps.length - 1,
+          tourNextLabel: i === steps.length - 1 ? 'Finish' : 'Next',
+          tourBackVis: i === 0 ? 'hidden' : 'visible',
+          tourDots: steps.map((_, k) => ({
+            bg: k === i ? a : (k < i ? 'var(--ink-4)' : 'var(--line)'),
+            w: k === i ? '18px' : '6px',
+          })),
+          tourNext: () => this.goTourStep(i + 1),
+          tourBack: () => this.goTourStep(i - 1),
+          tourSkip: () => this.endTour(),
+        };
+      })(),
 
       /* ── Accessibility ──────────────────────────────────────────────── */
       showA11y: this.state.showA11y,
       openA11y: () => this.setState({ showA11y: true }),
+      startTour: () => this.startTour(),
       closeA11y: () => this.setState({ showA11y: false }),
 
       textStep: String(this.state.textScale),
@@ -1765,7 +2115,7 @@ class Component extends DCLogic {
         setCompact: () => this.setState({ density: 'compact' }, () => this.applyMotion()), setComfy: () => this.setState({ density: 'comfortable' }, () => this.applyMotion()),
         fairPrice: () => this.setState({ fairPrice: !this.state.fairPrice }), inStock: () => this.setState({ inStock: !this.state.inStock }),
       },
-      onSearchInput: (e) => this.setState({ searchQuery: e.target.value, searchMiss: false }),
+      onSearchInput: (e) => this.setState({ searchQuery: e.target.value, searchMiss: false, searchSuggest: null }),
       onSearchKey: (e) => { if (e.key === 'Enter') this.runSearch(); },
       goScan: go('scan'), goResult: go('result'), goWatchlist: go('watch'),
       startScan: () => this.handleScan(), openCompare: () => this.setState({ compareOpen: true }), closeCompare: () => this.setState({ compareOpen: false }),

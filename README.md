@@ -251,6 +251,35 @@ Scaling is handled by `--findr-scale` (computed in `<head>`) and the breakpoint 
 
 ---
 
+# Finding things
+
+Search tolerates typos. It tries an exact match first — across full product names, individual words, and informal names like "airpods", "xm4" or "dog food" — and only then falls back to fuzzy matching.
+
+The fuzzy pass uses Damerau-Levenshtein distance, which counts a transposition (`sonu` → `sony`) as a single edit rather than two. Adjacent-key slips are the most common typo on a touch keyboard, so that distinction matters more than it sounds. Tolerance scales with word length: one edit on a short word, up to three on a long one, so `sonu` finds Sony but `sock` doesn't.
+
+When the best candidate is close but not certain, Findr offers it — **Did you mean Sony WH-1000XM4?** — rather than guessing silently or claiming nothing was found.
+
+| Typed | Result |
+|-------|--------|
+| `soony`, `sonu` | suggests Sony WH-1000XM4 |
+| `nintedo` | suggests Nintendo Switch OLED |
+| `airpo`, `lulu`, `skii` | opens the product directly |
+| `qwertyuiop` | no match |
+
+---
+
+# Guided tour
+
+**Settings → Show me around** walks through all seventeen features: what the scanner is for, how vouchers stack, how to spot a fake sale, what the forecast graphs mean, and where the accessibility controls live.
+
+The dark ground is drawn as a very large box-shadow spreading outward from the highlighted rectangle, which leaves a real hole rather than a lighter patch — whatever is being described stays at full contrast underneath. Steps that describe a whole screen dim everything and centre the card instead.
+
+The engine switches screen, opens whatever needs opening (the forecast charts only exist inside an expanded category), scrolls the anchor into view, measures it in the frame's own coordinate space, and draws around it. Measurement accounts for the desktop frame's `transform: scale()`, so the hole lands correctly on a large monitor as well as a phone. The card takes whichever side of the hole has more room and caps its height to that space.
+
+The tour temporarily unlocks Pro so the forecast graphs can be explained, and restores the previous tier when it ends.
+
+---
+
 # Accessibility
 
 Findr keeps its normal look by default. **Settings → Vision & readability** holds a single master switch, and everything else lives behind it.
