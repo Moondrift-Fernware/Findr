@@ -268,11 +268,24 @@ When the best candidate is close but not certain, Findr offers it — **Did you 
 
 ---
 
+# The seller list
+
+On a product's breakdown, the **True lowest price** heading and its **Filter & sort** bar are pinned to the top of the scroll area. Through a long list of sellers the controls stay in reach, so re-sorting never means scrolling back up. The bar bleeds to both edges and draws an opaque background with a hairline, so rows scroll cleanly underneath it rather than showing through.
+
+---
+
 # Guided tour
 
-**Settings → Show me around** walks through all seventeen features: what the scanner is for, how vouchers stack, how to spot a fake sale, what the forecast graphs mean, and where the accessibility controls live.
+The tour starts automatically the first time someone enters the app — tap **Continue** on the landing screen and it opens straight away, which is what a first-time visitor to the GitHub Pages demo should get. It can be replayed any time from **Settings → Show me around**.
 
-The dark ground is drawn as a very large box-shadow spreading outward from the highlighted rectangle, which leaves a real hole rather than a lighter patch — whatever is being described stays at full contrast underneath. Steps that describe a whole screen dim everything and centre the card instead.
+It runs 18 steps, structured around the two features Findr is built on:
+
+1. **The scanner** and **the price forecasts** are introduced as the two headline ideas, each with its own emphasised card — an accent rail, a "THE BIG IDEA" badge, and a larger title — so they read as the point of the app rather than two items in a list. The forecasts especially, since that feature is easy to miss.
+2. Everything supporting the scanner (viewfinder, one-tap compare, typo-tolerant search, the deal breakdown, voucher stacking, fake-sale detection) follows the scanner intro.
+3. Everything supporting the forecasts (buy-now-or-wait, reading the graph) follows the forecast intro.
+4. The remaining features (recent scans, free scans, watchlist, trending, accessibility, navigation) are walked at a normal pace.
+
+The dark ground is drawn as a very large box-shadow spreading outward from the highlighted rectangle, which leaves a real hole rather than a lighter patch — whatever is being described stays at full contrast underneath. Steps that describe a whole screen dim everything and centre the card.
 
 The engine switches screen, opens whatever needs opening (the forecast charts only exist inside an expanded category), scrolls the anchor into view, measures it in the frame's own coordinate space, and draws around it. Measurement accounts for the desktop frame's `transform: scale()`, so the hole lands correctly on a large monitor as well as a phone. The card takes whichever side of the hole has more room and caps its height to that space.
 

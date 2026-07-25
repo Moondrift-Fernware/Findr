@@ -555,12 +555,17 @@ window.__resources = {
             </div>
             </sc-if>
 
-            <!-- true lowest -->
-            <div style="display:flex; align-items:baseline; gap:8px; margin:20px 0 10px;">
-              <h2 data-tour="lowest" class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">True lowest price</h2>
+            <!-- true lowest — heading + filter bar stick to the top of the
+                 scroll area so sorting stays reachable through a long seller
+                 list. Negative margins bleed the sticky band to the scroller
+                 edges (which carry 20px padding); the opaque background with
+                 a hairline covers rows sliding underneath. -->
+            <div data-tour="lowest" style="position:sticky; top:0; z-index:30; margin:20px -20px 12px; padding:0 20px 10px; background:var(--bg); border-bottom:1px solid var(--line);">
+            <div style="display:flex; align-items:baseline; gap:8px; padding-top:6px; margin-bottom:10px;">
+              <h2 class="serif" style="font-size:calc(17px * var(--ts)); font-weight:600; color:var(--ink);">True lowest price</h2>
               <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.retailerCount }} sellers · stacked</span>
             </div>
-            <div style="display:flex; align-items:center; gap:9px; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:9px;">
               <button onClick="{{ p.openFilter }}" style-active="background:#EAE7DC" style="display:flex; align-items:center; gap:7px; padding:7px 12px; border:1px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer;">
                 <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#23211A" stroke-width="1.7"><polygon points="21 4 3 4 10 12 10 19 14 21 14 12 21 4" stroke-linejoin="round"></polygon></svg>
                 <span style="font-size:calc(11.5px * var(--ts)); font-weight:600; color:var(--ink);">Filter &amp; sort</span>
@@ -568,6 +573,7 @@ window.__resources = {
               </button>
               <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">{{ p.filterSummary }}</span>
             </div>
+            </div><!-- /sticky lowest-price band -->
             <div style="display:flex; flex-direction:column; gap:11px;">
               <sc-for list="{{ p.retailers }}" as="r" hint-placeholder-count="3">
                 <div style="background:var(--surface); border:1px solid var(--line); border-radius:4px; overflow:hidden; border-left:3px solid {{ r.edge }}; animation:dropBounce 0.5s cubic-bezier(0.25,0.46,0.45,0.94) both; animation-delay: {{ r.animDelay }}">
@@ -1022,9 +1028,17 @@ window.__resources = {
           <div style="position:absolute; inset:0; background:rgba(18,16,12,0.78);"></div>
         </sc-if>
 
-        <div style="position:absolute; left:14px; right:14px; {{ tourCardPos }}; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:17px 16px 14px; box-shadow:0 14px 40px rgba(0,0,0,0.4); max-height:{{ tourCardMax }}; overflow-y:auto;">
+        <div style="position:absolute; left:14px; right:14px; {{ tourCardPos }}; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:0; box-shadow:0 14px 40px rgba(0,0,0,0.4); max-height:{{ tourCardMax }}; overflow-y:auto;">
+          <div style="height:4px; background: {{ tourRail }}; border-radius:10px 10px 0 0;"></div>
+          <div style="padding:15px 16px 14px;">
+          <sc-if value="{{ tourHasBadge }}" hint-placeholder-val="{{ false }}">
+            <div style="display:inline-flex; align-items:center; gap:6px; margin-bottom:9px; padding:4px 10px; border-radius:999px; background: {{ aMuted }};">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="{{ a }}" stroke="none" style="flex-shrink:0;"><path d="M12 2l2.9 6.3 6.9.7-5.1 4.6 1.4 6.8L12 17.8 5.9 20.4l1.4-6.8L2.2 9l6.9-.7z"></path></svg>
+              <span class="mono" style="font-size:calc(9px * var(--ts)); font-weight:600; letter-spacing:0.07em; color: {{ a }}">{{ tourBadge }}</span>
+            </div>
+          </sc-if>
           <div style="display:flex; align-items:baseline; justify-content:space-between; gap:10px;">
-            <h2 class="serif" style="font-size:calc(19px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2;">{{ tourTitle }}</h2>
+            <h2 class="serif" style="font-size:{{ tourTitleSize }}; font-weight:600; color:var(--ink); line-height:1.2;">{{ tourTitle }}</h2>
             <span class="mono" style="font-size:calc(10.5px * var(--ts)); color:var(--ink-3); white-space:nowrap; flex-shrink:0;">{{ tourCount }}</span>
           </div>
           <p style="font-size:calc(13.5px * var(--ts)); color:var(--ink-2); line-height:1.6; margin-top:8px;">{{ tourBody }}</p>
@@ -1041,6 +1055,7 @@ window.__resources = {
             <button onClick="{{ tourBack }}" style="visibility:{{ tourBackVis }}; min-height:46px; padding:12px 18px; border:1px solid var(--line-2); border-radius:8px; background:var(--surface); font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:600; color:var(--ink); cursor:pointer;">Back</button>
             <button onClick="{{ tourNext }}" style-active="transform:scale(0.98)" style="min-height:46px; padding:12px 22px; border:none; border-radius:8px; background: {{ a }}; color: {{ aOn }}; font-family:'Public Sans'; font-size:calc(13px * var(--ts)); font-weight:700; cursor:pointer;">{{ tourNextLabel }}</button>
           </div>
+          </div><!-- /card padding -->
         </div>
       </div>
     </sc-if>
@@ -1409,56 +1424,62 @@ class Component extends DCLogic {
      anchor render a centred card instead — used for the opening and
      closing beats, and for anything that describes a whole screen.        */
   static TOUR = [
-    { screen: 'scan', title: 'Welcome to Findr',
-      body: 'Findr finds the real lowest price for anything you are about to buy, across every major store at once. This tour takes about a minute.' },
+    { screen: 'scan', hero: 'intro', title: 'Welcome to Findr',
+      body: 'Findr finds the real lowest price for anything you are about to buy, across every store at once. Two things make it work: the scanner, and the price forecasts. Let us start with those.' },
 
-    { screen: 'scan', target: 'viewfinder', title: 'Point at anything',
-      body: 'Scan a product in a shop, a box on your table, or something on another screen. Findr recognises it and starts hunting for a better price than the one in front of you.' },
+    /* ── HERO 1 · THE SCANNER ─────────────────────────────────────── */
+    { screen: 'scan', hero: 'scan', badge: 'THE BIG IDEA · 1 OF 2', title: 'Scan anything, anywhere',
+      body: 'This is the heart of Findr. Point your camera at a product — on a shelf, in a box, or on another screen — and Findr identifies it and hunts every major store for a better price than the one in front of you. No typing, no tab-juggling.' },
+
+    { screen: 'scan', target: 'viewfinder', title: 'The viewfinder',
+      body: 'Line the product up here. In the real app this is your live camera; in this demo it is a sample. Findr reads the product, not a barcode, so it works even when there is no label to scan.' },
 
     { screen: 'scan', target: 'scanbtn', title: 'One tap to compare',
-      body: 'This checks every seller at once. It usually takes a couple of seconds — you do not have to open five shopping apps yourself.' },
+      body: 'This fires off the search across every seller at once — a couple of seconds instead of opening five shopping apps yourself.' },
 
-    { screen: 'scan', target: 'search', title: 'Or just type the name',
-      body: 'Do not worry about spelling. Type “soony” or “nintedo” and Findr will ask if you meant Sony or Nintendo rather than telling you nothing was found.' },
+    { screen: 'scan', target: 'search', title: 'Or just type it',
+      body: 'Prefer typing? Do not worry about spelling — enter “soony” or “nintedo” and Findr asks if you meant Sony or Nintendo rather than drawing a blank.' },
 
-    { screen: 'scan', target: 'credits', title: 'Your free scans',
-      body: 'Free accounts get a handful of scans. This counts down as you use them. Findr Pro removes the limit and unlocks price history and forecasts.' },
-
-    { screen: 'scan', target: 'recent', title: 'Everything you have scanned',
-      body: 'Recent scans stay here with the price at the time and how much it has moved since. Tap any of them to open the full breakdown again.' },
-
-    { screen: 'product', title: 'The deal breakdown',
-      body: 'This is what a scan gives you. The headline is the Findr pick: the seller we would actually buy from, and what it saves against the price you would have paid.' },
+    { screen: 'product', title: 'What a scan gives you',
+      body: 'Every scan opens a full breakdown. The headline is the Findr pick: the seller we would actually buy from, and what it saves against the price you would have paid.' },
 
     { screen: 'product', target: 'lowest', title: 'Every seller, stacked',
-      body: 'Sellers are ranked by what you truly pay — item price plus shipping, minus every voucher that genuinely applies. The cheapest sticker price is often not the cheapest total.' },
+      body: 'Sellers are ranked by what you truly pay — item price plus shipping, minus every voucher that genuinely applies. The cheapest sticker price is often not the cheapest total. This bar stays pinned as you scroll, so you can re-sort at any point.' },
 
     { screen: 'product', target: 'vouchers', title: 'Vouchers, already stacked',
-      body: 'Findr finds the codes and works out which ones combine. Tap to copy them all and go straight to the checkout with the discount already worked out.' },
+      body: 'Findr finds the codes and works out which ones combine. Tap to copy them all and go straight to checkout with the discount already applied.' },
 
     { screen: 'product', title: 'Spotting a fake sale',
-      body: 'Some listings get an “inflated” flag. That means the seller raised the price shortly before discounting it, so the sale is not a real one. Findr checks 90 days of history before it calls anything a deal.' },
+      body: 'Some listings get an “inflated” flag: the seller quietly raised the price before discounting it, so the “sale” is not real. Findr checks 90 days of history before it calls anything a deal.' },
+
+    /* ── HERO 2 · THE FORECASTS ───────────────────────────────────── */
+    { screen: 'predict', hero: 'predict', badge: 'THE BIG IDEA · 2 OF 2', title: 'Findr predicts prices',
+      body: 'This is the part most people miss, and it is the cleverest thing Findr does. It does not just tell you the lowest price today — it forecasts where prices are heading over the next 30 days, so you know whether to buy now or wait. Look for Predict in the bottom bar.' },
+
+    { screen: 'predict', target: 'predicthead', title: 'Buy now, or wait?',
+      body: 'Every product carries a 30-day outlook. A forecast drop means hold off; a forecast rise means buy before it climbs. This is the difference between a good price and the best one.' },
+
+    { screen: 'predict', target: 'chart', expand: 0, hero: 'chart', title: 'Reading the graph',
+      body: 'The line is recent real price history. Downward with ↓ DROP means it is falling — worth waiting. ↑ HIKE means it is climbing — buy now. STABLE means no movement. The arrows and words carry the meaning, so it reads the same even if you cannot separate the colours.' },
+
+    /* ── THE REST · normal pace ───────────────────────────────────── */
+    { screen: 'scan', target: 'recent', title: 'Your recent scans',
+      body: 'Everything you scan stays here with its price at the time and how far it has moved since. Tap any of them to reopen the breakdown.' },
+
+    { screen: 'scan', target: 'credits', title: 'Free scans',
+      body: 'Free accounts get a handful of scans, counted down here. Findr Pro removes the limit and unlocks full price history.' },
 
     { screen: 'watch', target: 'watchhead', title: 'Things you are waiting on',
-      body: 'Save anything you are not ready to buy. Findr keeps watching the price and tells you when it genuinely drops — not every time a shop runs a sale banner.' },
+      body: 'Save anything you are not ready to buy. Findr keeps watching and tells you when the price genuinely drops — not every time a shop runs a banner.' },
 
-    { screen: 'trending', target: 'trendhead', title: 'What is moving right now',
-      body: 'Deals happening across the region, grouped by category. The badges tell you whether something is at its lowest ever found, or just cheap today.' },
+    { screen: 'trending', target: 'trendhead', title: 'What is moving now',
+      body: 'Live deals across the region, grouped by category. The badges say whether something is at its lowest ever found, or just cheap today.' },
 
-    { screen: 'predict', target: 'predicthead', title: 'Looking ahead',
-      body: 'Findr forecasts where prices are going over the next 30 days, so you can tell the difference between “buy now” and “wait two weeks”.' },
-
-    { screen: 'predict', target: 'chart', expand: 0, title: 'Reading the graph',
-      body: 'The line is the last few weeks of real price history. A downward line with ↓ DROP means it is falling and worth waiting. ↑ HIKE means it is climbing and worth buying now. STABLE means it is not moving. The arrows carry the meaning, so it reads the same if you cannot separate the colours.' },
-
-    { screen: 'settings', title: 'Settings',
-      body: 'Your account, alerts and appearance live here. Alerts are deliberately quiet: Findr only pings you when a watched price is genuinely fair.' },
-
-    { screen: 'settings', target: 'a11yrow', title: 'Make it easier to see',
-      body: 'Vision and readability holds the accessibility controls: bigger text in five steps, three levels of contrast, and a colour-blind friendly mode that swaps the green and red price arrows for blue and orange.' },
+    { screen: 'settings', target: 'a11yrow', title: 'Made for everyone',
+      body: 'Vision and readability holds the accessibility controls: bigger text in five steps, three contrast levels, and a colour-blind friendly mode that swaps the green and red price arrows for blue and orange.' },
 
     { screen: 'scan', target: 'nav', title: 'Getting around',
-      body: 'These five take you between the scanner, your saved items, the trending deals and the forecasts. That is everything — happy hunting.' },
+      body: 'These five move you between the scanner, your saved items, the trending deals and the forecasts. That is everything — happy hunting.' },
   ];
 
   startTour() {
@@ -1817,7 +1838,7 @@ class Component extends DCLogic {
 
   renderVals() {
     const startMap = { Scan: 'scan', Result: 'result', Watchlist: 'watch', Predict: 'predict' };
-    const loggedIn = this.state.loggedIn === null ? (!!this.props.startLoggedIn || (this.props.startScreen && this.props.startScreen !== 'Login')) : this.state.loggedIn;
+    const loggedIn = this.state.loggedIn === null ? (!!this.props.startLoggedIn || this.props.startScreen === 'Result') : this.state.loggedIn;
     const screen = !loggedIn ? 'login' : (this.state.screen || startMap[this.props.startScreen] || 'scan');
     const isPro = this.state.tier === 'premium';
     /* Accents sit a shade darker than the original design so every option
@@ -1952,7 +1973,7 @@ class Component extends DCLogic {
       showPaywall: this.state.showPaywall,
       tierBadge: isPro ? '✦ FINDR PRO' : 'FREE', tierBadgeBg: isPro ? a : 'var(--surface-2)', tierBadgeColor: isPro ? aOn : 'var(--ink-2)',
       tierSub: isPro ? 'Unlimited scans & insights' : this.state.credits + ' of 5 scans left', showUpgradeRow: !isPro,
-      login: () => this.setState({ loggedIn: true, screen: 'scan' }),
+      login: () => this.setState({ loggedIn: true, screen: 'scan' }, () => { if (!this._tourSeen) { this._tourSeen = true; this.startTour(); } }),
       logout: () => this.setState({ loggedIn: false, tier: 'free', credits: 5, screen: null }),
       watchAd: () => this.setState({ credits: this.state.credits + 1, showPaywall: false }),
       upgradePro: () => this.setState({ tier: 'premium', showPaywall: false }),
@@ -2012,6 +2033,16 @@ class Component extends DCLogic {
           tourH: R ? R.h + 'px' : '0px',
           tourCardPos: cardPos,
           tourCardMax: cardMax + 'px',
+          /* Hero steps (the scanner and the forecasts) get a heavier card:
+             an accent top-rail, a category badge, and a larger title, so
+             the two features Findr is built around actually feel like the
+             headline acts rather than two entries in a list. */
+          tourIsHero: !!s.hero && s.hero !== 'chart',
+          tourNotHero: !(!!s.hero && s.hero !== 'chart'),
+          tourBadge: s.badge || '',
+          tourHasBadge: !!s.badge,
+          tourRail: s.hero && s.hero !== 'chart' ? a : 'transparent',
+          tourTitleSize: (s.hero && s.hero !== 'chart') ? 'calc(22px * var(--ts))' : 'calc(19px * var(--ts))',
           tourTitle: s.title,
           tourBody: s.body,
           tourCount: (i + 1) + ' of ' + steps.length,
