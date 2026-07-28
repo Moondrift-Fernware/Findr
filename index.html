@@ -1057,7 +1057,7 @@ window.__resources = {
           <p style="font-size:calc(13.5px * var(--ts)); color:var(--ink-2); line-height:1.6; margin-top:8px;">{{ tourBody }}</p>
 
           <div style="display:flex; align-items:center; gap:5px; margin-top:14px;">
-            <sc-for list="{{ tourDots }}" as="d" hint-placeholder-count="17">
+            <sc-for list="{{ tourDots }}" as="d" hint-placeholder-count="6">
               <span style="width:{{ d.w }}; height:6px; border-radius:999px; background:{{ d.bg }}; display:block; transition:all 0.2s;"></span>
             </sc-for>
           </div>
@@ -1437,62 +1437,23 @@ class Component extends DCLogic {
      anchor render a centred card instead — used for the opening and
      closing beats, and for anything that describes a whole screen.        */
   static TOUR = [
-    { screen: 'scan', hero: 'intro', title: 'Welcome to Findr',
-      body: 'Findr finds the real lowest price for anything you are about to buy, across every store at once. Two things make it work: the scanner, and the price forecasts. Let us start with those.' },
+    { screen: 'scan', hero: 'scan', badge: 'STEP 1 OF 6', title: 'Scan or Type to Search',
+      body: 'Point your camera at a product — or type its name — to instantly identify it and search every major store at once.' },
 
-    /* ── HERO 1 · THE SCANNER ─────────────────────────────────────── */
-    { screen: 'scan', hero: 'scan', badge: 'THE BIG IDEA · 1 OF 2', title: 'Scan anything, anywhere',
-      body: 'This is the heart of Findr. Point your camera at a product — on a shelf, in a box, or on another screen — and Findr identifies it and hunts every major store for a better price than the one in front of you. No typing, no tab-juggling.' },
+    { screen: 'product', target: 'lowest', badge: 'STEP 2 OF 6', title: 'Compare True Prices',
+      body: 'See a breakdown of sellers ranked by the actual final cost: item price plus shipping, minus any applicable discounts.' },
 
-    { screen: 'scan', target: 'viewfinder', title: 'The viewfinder',
-      body: 'Line the product up here. In the real app this is your live camera; in this demo it is a sample. Findr reads the product, not a barcode, so it works even when there is no label to scan.' },
+    { screen: 'product', target: 'vouchers', badge: 'STEP 3 OF 6', title: 'Auto-Apply Vouchers',
+      body: 'Findr automatically finds valid discount codes, figures out which ones can be combined, and prepares them for you at checkout.' },
 
-    { screen: 'scan', target: 'scanbtn', title: 'One tap to compare',
-      body: 'This fires off the search across every seller at once — a couple of seconds instead of opening five shopping apps yourself.' },
+    { screen: 'product', badge: 'STEP 4 OF 6', title: 'Spot Fake Sales',
+      body: 'Findr reviews 90 days of price history to flag “inflated” listings — so you are not tricked by a seller who raised the price right before putting it on sale.' },
 
-    { screen: 'scan', target: 'search', title: 'Or just type it',
-      body: 'Prefer typing? Do not worry about spelling — enter “soony” or “nintedo” and Findr asks if you meant Sony or Nintendo rather than drawing a blank.' },
+    { screen: 'predict', target: 'chart', hero: 'chart', badge: 'STEP 5 OF 6', title: 'Predict Future Prices',
+      body: 'Check the 30-day forecast graph to see whether you should buy now (prices climbing) or hold off (a drop is predicted).' },
 
-    { screen: 'product', title: 'What a scan gives you',
-      body: 'Every scan opens a full breakdown. The headline is the Findr pick: the seller we would actually buy from, and what it saves against the price you would have paid.' },
-
-    { screen: 'product', target: 'lowest', title: 'Every seller, stacked',
-      body: 'Sellers are ranked by what you truly pay — item price plus shipping, minus every voucher that genuinely applies. The cheapest sticker price is often not the cheapest total. This bar stays pinned as you scroll, so you can re-sort at any point.' },
-
-    { screen: 'product', target: 'vouchers', title: 'Vouchers, already stacked',
-      body: 'Findr finds the codes and works out which ones combine. Tap to copy them all and go straight to checkout with the discount already applied.' },
-
-    { screen: 'product', title: 'Spotting a fake sale',
-      body: 'Some listings get an “inflated” flag: the seller quietly raised the price before discounting it, so the “sale” is not real. Findr checks 90 days of history before it calls anything a deal.' },
-
-    /* ── HERO 2 · THE FORECASTS ───────────────────────────────────── */
-    { screen: 'predict', hero: 'predict', badge: 'THE BIG IDEA · 2 OF 2', title: 'Findr predicts prices',
-      body: 'This is the part most people miss, and it is the cleverest thing Findr does. It does not just tell you the lowest price today — it forecasts where prices are heading over the next 30 days, so you know whether to buy now or wait. Look for Predict in the bottom bar.' },
-
-    { screen: 'predict', target: 'predicthead', title: 'Buy now, or wait?',
-      body: 'Every product carries a 30-day outlook. A forecast drop means hold off; a forecast rise means buy before it climbs. This is the difference between a good price and the best one.' },
-
-    { screen: 'predict', target: 'chart', expand: 0, hero: 'chart', title: 'Reading the graph',
-      body: 'The line is recent real price history. Downward with ↓ DROP means it is falling — worth waiting. ↑ HIKE means it is climbing — buy now. STABLE means no movement. The arrows and words carry the meaning, so it reads the same even if you cannot separate the colours.' },
-
-    /* ── THE REST · normal pace ───────────────────────────────────── */
-    { screen: 'scan', target: 'recent', title: 'Your recent scans',
-      body: 'Everything you scan stays here with its price at the time and how far it has moved since. Tap any of them to reopen the breakdown.' },
-
-    { screen: 'scan', target: 'credits', title: 'Free scans',
-      body: 'Free accounts get a handful of scans, counted down here. Findr Pro removes the limit and unlocks full price history.' },
-
-    { screen: 'watch', target: 'watchhead', title: 'Things you are waiting on',
-      body: 'Save anything you are not ready to buy. Findr keeps watching and tells you when the price genuinely drops — not every time a shop runs a banner.' },
-
-    { screen: 'trending', target: 'trendhead', title: 'What is moving now',
-      body: 'Live deals across the region, grouped by category. The badges say whether something is at its lowest ever found, or just cheap today.' },
-
-    { screen: 'settings', target: 'a11yrow', title: 'Made for everyone',
-      body: 'Vision and readability holds the accessibility controls: bigger text in five steps, three contrast levels, and a colour-blind friendly mode that swaps the green and red price arrows for blue and orange.' },
-
-    { screen: 'scan', target: 'nav', title: 'Getting around',
-      body: 'These five move you between the scanner, your saved items, the trending deals and the forecasts. That is everything — happy hunting.' },
+    { screen: 'watch', target: 'watchhead', badge: 'STEP 6 OF 6', title: 'Track Items for Later',
+      body: 'Save items you are not ready to buy — Findr will monitor them and notify you when a genuine price drop occurs.' },
   ];
 
   startTour() {
