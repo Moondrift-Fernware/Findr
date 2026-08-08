@@ -330,7 +330,7 @@ window.__resources = {
         <div style="position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:0 28px; background-color:var(--bg); background-image: {{ gridBg }}; background-size:24px 24px;">
           <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
             <div style="display:flex; align-items:center; gap:10px; margin-bottom:22px;">
-              <img src="assets/Logo.png" alt="Findr" style="width:40px; height:40px; border-radius:8px; object-fit:cover; flex-shrink:0;" />
+              <img src="assets/Logo.png" alt="Findr" style="width:54px; height:54px; border-radius:12px; object-fit:cover; flex-shrink:0;" />
               <h1 class="serif" style="font-size:calc(30px * var(--ts)); font-weight:600; color:var(--ink); letter-spacing:-0.01em;">Findr</h1>
             </div>
             <h2 class="serif" style="font-size:calc(27px * var(--ts)); font-weight:600; color:var(--ink); line-height:1.2; letter-spacing:-0.01em;">Scan anything.<br>Pay the lowest price.</h2>
@@ -338,7 +338,7 @@ window.__resources = {
             <div style="display:flex; gap:18px; margin-top:22px;">
               <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">4.2M</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">listings</p></div>
               <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">90-day</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">price history</p></div>
-              <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">5 free</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">scans</p></div>
+              <div><p class="mono" style="font-size:calc(17px * var(--ts)); font-weight:500; color: {{ a }}">5/day</p><p class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3);">free scans</p></div>
             </div>
           </div>
           <div style="flex-shrink:0; padding-bottom:34px;">
@@ -346,7 +346,11 @@ window.__resources = {
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none"><path d="M21.35 11.1H12v2.98h5.35c-.5 2.4-2.55 3.78-5.35 3.78a5.86 5.86 0 0 1 0-11.72c1.44 0 2.74.51 3.76 1.5l2.25-2.25A9.32 9.32 0 0 0 12 2.7a9.3 9.3 0 1 0 0 18.6c5.37 0 8.9-3.78 8.9-9.1 0-.6-.06-1.4-.16-1.1z" fill="#F4F1E8"></path></svg>
               Continue with Google
             </button>
-            <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:12px; line-height:1.5;">Free account · 5 scans/month · upgrade anytime</p>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:10px; padding:9px 13px; border:1px solid var(--line); border-radius:6px; background:var(--surface);">
+              <span style="font-size:calc(12px * var(--ts)); color: {{ a }}; flex-shrink:0;">✦</span>
+              <p style="font-size:calc(11px * var(--ts)); color:var(--ink-2); line-height:1.4; flex:1;">Want unlimited scans, forecasts & voucher stacking? <span style="color:var(--ink); font-weight:600;">Findr Pro</span> is <span style="color: {{ a }}; font-weight:600;">S$3.99/mo</span> — upgrade anytime after sign‑in.</p>
+            </div>
+            <p class="mono" style="font-size:calc(9.5px * var(--ts)); color:var(--ink-3); text-align:center; margin-top:10px; line-height:1.5;">Free account · 5 scans/day · 15/month · upgrade anytime</p>
           </div>
         </div>
       </sc-if>
@@ -357,7 +361,7 @@ window.__resources = {
           <div style="padding:22px 20px 14px; flex-shrink:0;">
             <div style="display:flex; align-items:flex-end; justify-content:space-between; border-bottom:1px solid var(--ink); padding-bottom:9px;">
               <div style="display:flex; align-items:center; gap:8px;">
-                <img src="assets/Logo.png" alt="Findr" style="width:28px; height:28px; border-radius:6px; object-fit:cover; flex-shrink:0;" />
+                <img src="assets/Logo.png" alt="Findr" style="width:38px; height:38px; border-radius:8px; object-fit:cover; flex-shrink:0;" />
                 <div>
                   <h1 class="serif" style="font-size:calc(26px * var(--ts)); font-weight:600; color:var(--ink); letter-spacing:-0.01em; line-height:1;">Findr</h1>
                   <span class="mono" style="font-size:calc(10px * var(--ts)); color:var(--ink-3); letter-spacing:0.03em;">SE ASIA · JUL 2026</span>
@@ -1248,7 +1252,7 @@ window.__resources = {
             <h3 class="serif" style="font-size:calc(20px * var(--ts)); font-weight:600; color:var(--ink);">You're out of scans</h3>
             <button onClick="{{ closePaywall }}" style="border:none; background:none; cursor:pointer; padding:2px;"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="#6A6656" stroke-width="1.8"><path d="M18 6L6 18M6 6l12 12" stroke-linecap="round"></path></svg></button>
           </div>
-          <p style="font-size:calc(13px * var(--ts)); color:var(--ink-2); line-height:1.5;">Free accounts get 5 scans a month. Get one more now, or go unlimited with Pro.</p>
+          <p style="font-size:calc(13px * var(--ts)); color:var(--ink-2); line-height:1.5;">Free accounts get 5 scans a day, up to 15 a month. Get one more now, or go unlimited with Pro.</p>
           <button onClick="{{ watchAd }}" style-active="transform:scale(0.99)" style="width:100%; min-height:50px; margin-top:18px; border:1px solid var(--line); border-radius:4px; background:var(--surface); color:var(--ink); font-family:'Public Sans'; font-size:calc(14px * var(--ts)); font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:9px;">
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#23211A" stroke-width="1.6"><polygon points="6 4 20 12 6 20 6 4" stroke-linejoin="round"></polygon></svg>
             Watch a 30-sec ad · +1 scan
@@ -1947,7 +1951,7 @@ class Component extends DCLogic {
       isPro, credits: this.state.credits, creditLabel: isPro ? 'Pro' : this.state.credits + ' left',
       showPaywall: this.state.showPaywall,
       tierBadge: isPro ? '✦ FINDR PRO' : 'FREE', tierBadgeBg: isPro ? a : 'var(--surface-2)', tierBadgeColor: isPro ? aOn : 'var(--ink-2)',
-      tierSub: isPro ? 'Unlimited scans & insights' : this.state.credits + ' of 5 scans left', showUpgradeRow: !isPro,
+      tierSub: isPro ? 'Unlimited scans & insights' : this.state.credits + ' scans left today', showUpgradeRow: !isPro,
       login: () => this.setState({ loggedIn: true, screen: 'scan' }, () => { if (!this._tourSeen) { this._tourSeen = true; this.startTour(); } }),
       logout: () => this.setState({ loggedIn: false, tier: 'free', credits: 5, screen: null }),
       watchAd: () => this.setState({ credits: this.state.credits + 1, showPaywall: false }),
